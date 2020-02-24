@@ -7,12 +7,12 @@
     - [Defining a plugin](#defining-a-plugin)
     - [Using the events from the GalacticConquest object](#using-the-events-from-the-galacticconquest-object)
     - [Defining a plugin with dependencies](#defining-a-plugin-with-dependencies)
-    - [Using eawx-crossplot for communication between story plots](#using-eawx-crossplot-for-communication-between-story-plots)
-    - [The GalacticConquest class](#the-galacticconquest-class)
+  - [Using eawx-crossplot for communication between story plots](#using-eawx-crossplot-for-communication-between-story-plots)
+  - [The GalacticConquest class](#the-galacticconquest-class)
       - [Attributes](#attributes)
       - [Events](#events)
-    - [The Planet class](#the-planet-class)
-    - [Quick Reference](#quick-reference)
+  - [The Planet class](#the-planet-class)
+  - [Quick Reference](#quick-reference)
       - [Plugin folders](#plugin-folders)
       - [Skeleton of a plugin definition](#skeleton-of-a-plugin-definition)
       - [Skeleton of a plugin class](#skeleton-of-a-plugin-class)
@@ -202,7 +202,7 @@ end
 ```
 </details>
 
-### Using eawx-crossplot for communication between story plots
+## Using eawx-crossplot for communication between story plots
 
 The EawX framework comes with `crossplot`, a library that allows publish-subscribe communication via `GlobalValues` between story plots. To achieve this `crossplot` initialises a `MasterGlobalValueEventBus` in `GameScoring.lua` that listens to incoming subscriptions and publish messages. The publish messages are redirected to `GlobalValueEventBus` instances running on different story plots. Users of `crossplot` don't have to worry about the implementation details and can simply call `crossplot:init()` to initialise `crossplot` in a story plot. The story plot running the instance of `EawXMod` does not have to call `crossplot:init()` explicitly, it will be initialised inside the `EawXMod` constructor and can be used globally afterwards.
 
@@ -272,9 +272,9 @@ end
 ```
 </details>
 
-### The GalacticConquest class
+## The GalacticConquest class
 
-#### Attributes
+### Attributes
 
 | Attribute   | Type                      | Description                            |
 | ----------- | ------------------------- | -------------------------------------- |
@@ -282,7 +282,7 @@ end
 | Planets     | table<string, Planet>     | Key: Planet name, Value: Planet object |
 | Events      | table<string, Observable> | Key: Event name, Value: Event object   |
 
-#### Events
+### Events
 
 | Event name                 | Event Args for listeners | Arg Description                            |
 | -------------------------- | ------------------------ | ------------------------------------------ |
@@ -294,7 +294,7 @@ end
 | TacticalBattleStarting     | -                        | -                                          |
 | TacticalBattleEnding       | -                        | -                                          |
 
-### The Planet class
+## The Planet class
 
 EawX wraps EaW's planet objects in a custom `Planet` class. `ctx.galactic_conquest.Planets` as well as planets received from its events are all instances of the `Planet` class.
 
@@ -305,13 +305,13 @@ EawX wraps EaW's planet objects in a custom `Planet` class. `ctx.galactic_conque
 | Planet:get_name()                    | string            |
 | Planet:has_structure(structure_name) | boolean           |
 
-### Quick Reference
+## Quick Reference
 
-#### Plugin folders
+### Plugin folders
 
 All plugin must be located in the `eawx-plugins` directory. They also need to contain a file called `init.lua` that returns a plugin definition as specified in the following section.
 
-#### Skeleton of a plugin definition
+### Skeleton of a plugin definition
 
 ```lua
 require("eawx-plugins/my-plugin/MyPlugin")
@@ -324,7 +324,7 @@ return {
 }
 ```
 
-#### Skeleton of a plugin class
+### Skeleton of a plugin class
 
 ```lua
 require("eawx-std/class")
@@ -342,7 +342,7 @@ end
 ```
 
 
-#### Possible plugin targets
+### Possible plugin targets
 
 | target               | update time   | needs update method | update arguments |
 | -------------------- | ------------- | ------------------- | ---------------- |
