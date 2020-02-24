@@ -1,5 +1,7 @@
 - [The EawX Galactic Framework](#the-eawx-galactic-framework)
   - [Introduction](#introduction)
+  - [License](#license)
+  - [Installation](#installation)
   - [Basic set up](#basic-set-up)
     - [The main GC Lua file](#the-main-gc-lua-file)
     - [Defining a plugin](#defining-a-plugin)
@@ -24,6 +26,14 @@ This repository contains the source files of the Empire at War Expanded Galactic
 
 When adding more and more Lua based features to an Empire at War mod the number of modules that need to be updated every frame grows. Moreover managing dependencies and wiring the whole system together becomes increasingly complex.
 To combat this complexity we have introduced a framework that comes with a plugin system that loads modules from a plugin folder, resolves their specified dependencies automatically and updates them at a set time during the update cycle. Additionally it also includes a class system as well as crossplot, a powerful library to communicate across different story plots in EaW. The following sections explain its functionality in detail. If you just want to have quick look jump to the [Quick Reference](#quick-reference)
+
+## License
+
+You are free to use the framework in other Empire at War mods on the condition that the `eawx-` folder names and the names of the contained files are not changed. Moreover proper credits must be given in the mod's Readme.
+
+## Installation
+
+Drop the `eawx-` directories into your mod's `Data/Scripts/Library` folder. Override the default `GameScoring.lua` in `Data/Scripts/Miscellaneous` with the one provided in this repository.
 
 ## Basic set up
 ### The main GC Lua file
