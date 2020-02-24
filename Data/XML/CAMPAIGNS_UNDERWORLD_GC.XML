@@ -1,0 +1,152 @@
+<?xml version="1.0" ?>
+<Campaigns>
+
+
+	<!-- ************************************************************** -->
+	<!-- **************** SANDBOX CAMPAIGN "Gateways" ***************** -->
+	<!-- ************************************************************** -->
+
+
+	<Campaign Name="Sandbox_Gateways_Underworld">
+
+		<Campaign_Set> Sandbox_Gateways_Underworld </Campaign_Set>
+		<Sort_Order>1</Sort_Order>
+
+		<Text_ID> TEXT_CAMPAIGN_SINGLE_27 </Text_ID>
+		<Description_Text> TEXT_CAMPAIGN_SINGLE_DESCRIPTION_27 </Description_Text>
+
+		<Camera_Shift_X> 40.0 </Camera_Shift_X>
+		<Camera_Shift_Y> 0.0 </Camera_Shift_Y>
+		<Camera_Distance> 1200.0 </Camera_Distance>
+
+		<Locations> 
+				Galaxy_Core_Art_Model,
+				Anaxes, 
+				Coruscant, 
+				Kuat
+		</Locations>
+
+		<Trade_Routes>
+				Anaxes_Coruscant, 
+				Anaxes_Kuat
+		</Trade_Routes>
+
+		<Home_Location> Rebel, Hoth </Home_Location>
+		<Home_Location> Empire, Thyferra </Home_Location>
+		<Home_Location> Underworld, Wayland </Home_Location>
+
+		<Starting_Active_Player> Underworld </Starting_Active_Player>
+
+		<Rebel_Story_Name>Story_Plots_Rebel_AI_Heroes_EXP.xml</Rebel_Story_Name>
+		<Empire_Story_Name>Story_Plots_Empire_AI_Heroes_EXP.xml</Empire_Story_Name>
+		<Underworld_Story_Name>Story_Plots_Sandbox_27_Underworld.xml</Underworld_Story_Name>
+
+		<AI_Player_Control> Empire, BasicEmpire </AI_Player_Control>
+		<AI_Player_Control> Rebel, BasicRebel </AI_Player_Control>
+		<AI_Player_Control> Pirates, None </AI_Player_Control>
+
+		<Human_Victory_Conditions>
+				Galactic_Super_Weapon_Destruction,
+				Galactic_All_Planets_Controlled
+		</Human_Victory_Conditions>
+
+		<AI_Victory_Conditions>
+				Galactic_Super_Weapon_Destruction,
+				Galactic_All_Planets_Controlled
+		</AI_Victory_Conditions>
+
+		<Markup_Filename>Empire, DefaultGalacticHints </Markup_Filename>
+		<Markup_Filename>Pirates, DefaultGalacticHints </Markup_Filename>
+		<Markup_Filename>Rebel, DefaultGalacticHints </Markup_Filename>
+		<Markup_Filename>Underworld, DefaultGalacticHints </Markup_Filename>
+
+		<Supports_Custom_Settings>True</Supports_Custom_Settings>
+		<Show_Completed_Tab>True</Show_Completed_Tab>
+
+		<!-- Special Case Planets for Cantinas and Hutt Palaces -->
+
+		<Special_Case_Production> Empire, Abregado_Rae, Ground_Cantina_E</Special_Case_Production>
+		<Special_Case_Production> Rebel, Abregado_Rae, Ground_Cantina_R</Special_Case_Production>
+
+		<Special_Case_Production> Empire, Atzerri, Ground_Cantina_E</Special_Case_Production>
+		<Special_Case_Production> Rebel, Atzerri, Ground_Cantina_R</Special_Case_Production>
+
+		<Special_Case_Production> Empire, Atzerri, Ground_Hutt_Palace_E</Special_Case_Production>
+		<Special_Case_Production> Rebel, Atzerri, Ground_Hutt_Palace_R</Special_Case_Production>
+
+		<Special_Case_Production> Empire, Corellia, Ground_Cantina_E</Special_Case_Production>
+		<Special_Case_Production> Rebel, Corellia, Ground_Cantina_R</Special_Case_Production>
+
+		<Special_Case_Production> Empire, NalHutta, Ground_Cantina_E</Special_Case_Production>
+		<Special_Case_Production> Rebel, NalHutta, Ground_Cantina_R</Special_Case_Production>
+
+		<Special_Case_Production> Empire, NalHutta, Ground_Hutt_Palace_E</Special_Case_Production>
+		<Special_Case_Production> Rebel, NalHutta, Ground_Hutt_Palace_R</Special_Case_Production>
+
+		<Special_Case_Production> Empire, Ryloth, Ground_Cantina_E</Special_Case_Production>
+		<Special_Case_Production> Rebel, Ryloth, Ground_Cantina_R</Special_Case_Production>
+
+		<Special_Case_Production> Empire, Ryloth, Ground_Hutt_Palace_E</Special_Case_Production>
+		<Special_Case_Production> Rebel, Ryloth, Ground_Hutt_Palace_R</Special_Case_Production>
+
+		<Special_Case_Production> Empire, Tatooine, Ground_Cantina_E</Special_Case_Production>
+		<Special_Case_Production> Rebel, Tatooine, Ground_Cantina_R</Special_Case_Production>
+
+		<Special_Case_Production> Empire, Tatooine, Ground_Hutt_Palace_E</Special_Case_Production>
+		<Special_Case_Production> Rebel, Tatooine, Ground_Hutt_Palace_R</Special_Case_Production>
+
+
+		<!-- Rebel Starting Forces -->
+
+		<Starting_Credits> Rebel,  8000 </Starting_Credits>
+		<Starting_Tech_Level> Rebel, 1 </Starting_Tech_Level>
+		<Max_Tech_Level> Rebel, 4 </Max_Tech_Level>
+
+		<!-- Anaxes Space Forces -->
+		<Starting_Forces> Rebel, Anaxes, Rebel_Star_Base_2 </Starting_Forces>
+		<Starting_Forces> Rebel, Anaxes, Rebel_X-Wing_Squadron </Starting_Forces>
+		<Starting_Forces> Rebel, Anaxes, Y-Wing_Squadron </Starting_Forces>
+		<Starting_Forces> Rebel, Anaxes, Corellian_Corvette </Starting_Forces>
+		<!-- Anaxes Land Forces -->
+		<Starting_Forces> Rebel, Anaxes, R_Ground_Barracks </Starting_Forces>
+		<Starting_Forces> Rebel, Anaxes, R_Ground_Base_Shield </Starting_Forces>
+		<Starting_Forces> Rebel, Anaxes, Rebel_Tank_Buster_Squad </Starting_Forces>
+		<Starting_Forces> Rebel, Anaxes, Rebel_Infantry_Squad </Starting_Forces>
+
+		<!-- Empire Starting Forces -->
+
+		<Starting_Credits> Empire,  8000 </Starting_Credits>
+		<Starting_Tech_Level> Empire, 2 </Starting_Tech_Level>
+		<Max_Tech_Level> Empire, 5 </Max_Tech_Level>
+
+		<!-- Coruscant Space Forces -->
+		<Starting_Forces> Empire, Coruscant, Empire_Star_Base_2 </Starting_Forces>
+		<Starting_Forces> Empire, Coruscant, Tartan_Patrol_Cruiser </Starting_Forces>
+		<Starting_Forces> Empire, Coruscant, Acclamator_Assault_Ship </Starting_Forces>
+		<!-- Coruscant Land Forces -->
+		<Starting_Forces> Empire, Coruscant, E_Ground_Light_Vehicle_Factory </Starting_Forces>
+		<Starting_Forces> Empire, Coruscant, E_Ground_Research_Facility </Starting_Forces>
+		<Starting_Forces> Empire, Coruscant, Imperial_Anti_Infantry_Brigade </Starting_Forces>
+		<Starting_Forces> Empire, Coruscant, Imperial_Heavy_Scout_Squad </Starting_Forces>
+
+		<!-- Underworld Starting Forces -->
+
+		<Starting_Credits> Underworld,  12000 </Starting_Credits>
+		<Starting_Tech_Level> Underworld, 2 </Starting_Tech_Level>
+		<Max_Tech_Level> Underworld, 5 </Max_Tech_Level>
+
+
+		<!-- Kuat Space Forces -->
+		<Starting_Forces> Underworld, Kuat, Underworld_Star_Base_2 </Starting_Forces>
+		<Starting_Forces> Underworld, Kuat, StarViper_Squadron </Starting_Forces>
+		<Starting_Forces> Underworld, Kuat, Skipray_Squadron </Starting_Forces>
+		<Starting_Forces> Underworld, Kuat, Vengeance_Frigate </Starting_Forces>
+		<Starting_Forces> Underworld, Kuat, Vengeance_Frigate </Starting_Forces>
+		<!-- Kuat Land Forces -->
+		<Starting_Forces> Underworld, Kuat, U_Ground_Droid_Works </Starting_Forces>
+		<Starting_Forces> Underworld, Kuat, Underworld_Disruptor_Merc_Squad </Starting_Forces>
+		<Starting_Forces> Underworld, Kuat, Destroyer_Droid_Company </Starting_Forces>
+		<Starting_Forces> Underworld, Kuat, Destroyer_Droid_Company </Starting_Forces>
+	</Campaign>
+
+</Campaigns>
