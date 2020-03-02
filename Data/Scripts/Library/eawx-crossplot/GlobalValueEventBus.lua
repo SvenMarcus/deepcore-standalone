@@ -11,9 +11,9 @@
 --*                                                                                                *
 --*                                                                                                *
 --*       File:              GlobalValueEventBus.lua                                               *
---*       File Created:      Friday, 21st February 2020 10:14                                      *
+--*       File Created:      Monday, 2nd March 2020 15:31                                          *
 --*       Author:            [TR] Pox                                                              *
---*       Last Modified:     Saturday, 22nd February 2020 04:38                                    *
+--*       Last Modified:     Monday, 2nd March 2020 15:31                                          *
 --*       Modified By:       [TR] Pox                                                              *
 --*       Copyright:         Thrawns Revenge Development Team                                      *
 --*       License:           This code may not be used without the author's explicit permission    *
@@ -109,6 +109,10 @@ function MasterGlobalValueEventBus:new()
 
     ---@type table<string, string[]>
     self.subscribers = {}
+
+    ---@type table<string, table>
+    self.local_subscribers = {}
+
     self.message_queue = GlobalValueQueue()
 end
 
@@ -159,8 +163,26 @@ function MasterGlobalValueEventBus:process_publish_messages()
 end
 
 ---@param event_name string
+function MasterGlobalValueEventBus:subscribe(event_name, listener_function, optional_self)
+    if not self.local_subscribers[event_name] then
+        self.local_subscribers[event_name] = {}
+    end
+
+    table.insert(
+        self.local_subscribers[event_name],
+        {
+            func = listener_function,
+            optional_self = optional_self
+        }
+    )
+
+    DebugMessage("Registered local listener on master for %s", event_name)
+end
+
+---@param event_name string
 ---@param ... varargs
 function MasterGlobalValueEventBus:publish(event_name, ...)
+    self:publish_to_local_subscribers(event_name, arg)
     local subscribers = self.subscribers[event_name]
 
     if not subscribers then
@@ -175,6 +197,24 @@ function MasterGlobalValueEventBus:publish(event_name, ...)
                 args = arg
             }
         )
+    end
+end
+
+---@private
+function MasterGlobalValueEventBus:publish_to_local_subscribers(event_name, arg_table)
+    local subscribers = self.local_subscribers[event_name]
+
+    if not subscribers then
+        return
+    end
+
+    DebugMessage("Publishing %s to local subscribers", tostring(event_name))
+    for _, subscriber in pairs(subscribers) do
+        if subscriber.optional_self then
+            subscriber.func(subscriber.optional_self, unpack(arg_table))
+        else
+            subscriber.func(unpack(arg_table))
+        end
     end
 end
 

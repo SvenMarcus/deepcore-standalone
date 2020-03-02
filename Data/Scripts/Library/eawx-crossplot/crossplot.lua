@@ -35,7 +35,7 @@ function crossplot:master()
     self.__instance = MasterGlobalValueEventBus()
 end
 
-function crossplot:init()
+function crossplot:galactic()
     if self.__instance then
         DebugMessage("crossplot has already been initialized in this plot")
         return
@@ -45,11 +45,28 @@ function crossplot:init()
     self.__instance = GlobalValueEventBus()
 end
 
-function crossplot:subscribe(event_name, listener_function, optional_self)
-    if getmetatable(self.__instance) == MasterGlobalValueEventBus then
-        DebugMessage("subscribe is only available on non GameScoring plots")
+function crossplot:tactical()
+    if self.__instance then
+        DebugMessage("crossplot has already been initialized in this plot")
         return
     end
+
+    DebugMessage("%s -- initializing GlobalValueEventBus", tostring(Script))
+    self.__instance = GlobalValueEventBus("crossplot:tactical")
+end
+
+function crossplot:game_object()
+    if self.__instance then
+        DebugMessage("crossplot has already been initialized in this plot")
+        return
+    end
+
+    DebugMessage("%s -- initializing GlobalValueEventBus", tostring(Script))
+    local name = tostring(Object)
+    self.__instance = GlobalValueEventBus(name)
+end
+
+function crossplot:subscribe(event_name, listener_function, optional_self)
     self.__instance:subscribe(event_name, listener_function, optional_self)
 end
 

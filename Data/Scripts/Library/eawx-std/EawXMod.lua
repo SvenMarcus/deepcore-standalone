@@ -29,7 +29,7 @@ require("eawx-std/PluginLoader")
 EawXMod = class()
 
 function EawXMod:new(playable_factions, context, plugin_list)
-    crossplot:init()
+    crossplot:galactic()
     self.galactic_conquest = GalacticConquest(playable_factions)
 
     if not context then

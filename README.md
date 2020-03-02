@@ -9,14 +9,14 @@
     - [Defining a plugin with dependencies](#defining-a-plugin-with-dependencies)
   - [Using eawx-crossplot for communication between story plots](#using-eawx-crossplot-for-communication-between-story-plots)
   - [The GalacticConquest class](#the-galacticconquest-class)
-      - [Attributes](#attributes)
-      - [Events](#events)
+    - [Attributes](#attributes)
+    - [Events](#events)
   - [The Planet class](#the-planet-class)
   - [Quick Reference](#quick-reference)
-      - [Plugin folders](#plugin-folders)
-      - [Skeleton of a plugin definition](#skeleton-of-a-plugin-definition)
-      - [Skeleton of a plugin class](#skeleton-of-a-plugin-class)
-      - [Possible plugin targets](#possible-plugin-targets)
+    - [Plugin folders](#plugin-folders)
+    - [Skeleton of a plugin definition](#skeleton-of-a-plugin-definition)
+    - [Skeleton of a plugin class](#skeleton-of-a-plugin-class)
+    - [Possible plugin targets](#possible-plugin-targets)
 
 # The EawX Galactic Framework
 
@@ -204,7 +204,7 @@ end
 
 ## Using eawx-crossplot for communication between story plots
 
-The EawX framework comes with `crossplot`, a library that allows publish-subscribe communication via `GlobalValues` between story plots. To achieve this `crossplot` initialises a `MasterGlobalValueEventBus` in `GameScoring.lua` that listens to incoming subscriptions and publish messages. The publish messages are redirected to `GlobalValueEventBus` instances running on different story plots. Users of `crossplot` don't have to worry about the implementation details and can simply call `crossplot:init()` to initialise `crossplot` in a story plot. The story plot running the instance of `EawXMod` does not have to call `crossplot:init()` explicitly, it will be initialised inside the `EawXMod` constructor and can be used globally afterwards.
+The EawX framework comes with `crossplot`, a library that allows publish-subscribe communication via `GlobalValues` between story plots. To achieve this `crossplot` initialises a `MasterGlobalValueEventBus` in `GameScoring.lua` that listens to incoming subscriptions and publish messages. The publish messages are redirected to `GlobalValueEventBus` instances running on different story plots. Users of `crossplot` don't have to worry about the implementation details and can simply call `crossplot:galactic()` to initialise `crossplot` in a galactic story plot. The story plot running the instance of `EawXMod` does not have to call `crossplot:galactic()` explicitly, it will be initialised inside the `EawXMod` constructor and can be used globally afterwards.
 
 The example below shows how the first plot subscribes to the `sub_test` event with its `Receive` function with `crossplot:subscribe()`. 
 The second plot uses `crossplot:publish()` to publish an update to the `sub_test` event. The additional second argument provided by this plot will be passed on to the `Receive` function in the first plot. The number of additional arguments is not limited.
@@ -229,7 +229,7 @@ end
 
 function Begin_GC(message)
     if message == OnEnter then
-        crossplot:init()
+        crossplot:galactic()
         crossplot:subscribe("sub_test", Receive)
     elseif message == OnUpdate then
         crossplot:update()
@@ -262,7 +262,7 @@ end
 
 function Begin_GC(message)
     if message == OnEnter then
-        crossplot:init()
+        crossplot:galactic()
         Sleep(1) -- sleep to make sure the other plot had time to subscribe
         crossplot:publish("sub_test", "TEXT_FACTION_EMPIRE")
     elseif message == OnUpdate then
