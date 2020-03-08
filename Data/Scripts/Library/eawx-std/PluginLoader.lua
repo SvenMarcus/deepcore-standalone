@@ -24,7 +24,8 @@ require("eawx-std/class")
 ---@class PluginLoader
 PluginLoader = class()
 
-function PluginLoader:new(ctx)
+function PluginLoader:new(ctx, plugin_folder)
+    self.plugin_folder = plugin_folder
     self.loaded_plugins = {}
     self.plugins_by_target = {}
     self.context = ctx or {}
@@ -33,7 +34,7 @@ end
 ---@param plugin_list string[] @(Optional) A table with plugin folder names
 function PluginLoader:load(plugin_list)
     if not plugin_list then
-        plugin_list = require("eawx-plugins/InstalledPlugins")
+        plugin_list = require(self.plugin_folder .. "/InstalledPlugins")
     end
     local unresolved_plugins = {}
 
@@ -43,7 +44,7 @@ function PluginLoader:load(plugin_list)
 end
 
 function PluginLoader:get_plugins_for_target(target_name)
-    return self.plugins_by_target[target_name]
+    return self.plugins_by_target[target_name] or {}
 end
 
 ---@private
@@ -58,7 +59,7 @@ function PluginLoader:load_plugin(plugin_name, unresolved_plugins)
     end
 
     unresolved_plugins[plugin_name] = true
-    local plugin_def = require("eawx-plugins/" .. plugin_name .. "/init")
+    local plugin_def = require(self.plugin_folder.. "/" .. plugin_name .. "/init")
 
     local loaded_dependencies = {}
     if plugin_def.dependencies and table.getn(plugin_def.dependencies) > 0 then

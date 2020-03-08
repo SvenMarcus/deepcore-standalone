@@ -38,7 +38,7 @@ function EawXMod:new(playable_factions, context, plugin_list)
 
     context.galactic_conquest = self.galactic_conquest
 
-    local plugin_loader = PluginLoader(context)
+    local plugin_loader = PluginLoader(context, "eawx-plugins")
     plugin_loader:load(plugin_list)
 
     self.frame_update_plugins = plugin_loader:get_plugins_for_target("frame-update") or {}
