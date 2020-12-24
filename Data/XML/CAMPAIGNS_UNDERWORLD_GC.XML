@@ -33,17 +33,13 @@
 
 		<Home_Location> Rebel, Hoth </Home_Location>
 		<Home_Location> Empire, Thyferra </Home_Location>
-		<Home_Location> Underworld, Wayland </Home_Location>
 
-		<Starting_Active_Player> Underworld </Starting_Active_Player>
+		<Starting_Active_Player> Empire </Starting_Active_Player>
 
-		<Rebel_Story_Name>Story_Plots_Rebel_AI_Heroes_EXP.xml</Rebel_Story_Name>
-		<Empire_Story_Name>Story_Plots_Empire_AI_Heroes_EXP.xml</Empire_Story_Name>
-		<Underworld_Story_Name>Story_Plots_Sandbox_27_Underworld.xml</Underworld_Story_Name>
+		<Rebel_Story_Name>Story_Plots_Sandbox_27_Underworld.xml</Rebel_Story_Name>
 
-		<AI_Player_Control> Empire, BasicEmpire </AI_Player_Control>
-		<AI_Player_Control> Rebel, BasicRebel </AI_Player_Control>
-		<AI_Player_Control> Pirates, None </AI_Player_Control>
+		<AI_Player_Control> Empire, SandboxHuman </AI_Player_Control>
+		<AI_Player_Control> Rebel, None </AI_Player_Control>
 
 		<Human_Victory_Conditions>
 				Galactic_Super_Weapon_Destruction,
@@ -58,7 +54,6 @@
 		<Markup_Filename>Empire, DefaultGalacticHints </Markup_Filename>
 		<Markup_Filename>Pirates, DefaultGalacticHints </Markup_Filename>
 		<Markup_Filename>Rebel, DefaultGalacticHints </Markup_Filename>
-		<Markup_Filename>Underworld, DefaultGalacticHints </Markup_Filename>
 
 		<Supports_Custom_Settings>True</Supports_Custom_Settings>
 		<Show_Completed_Tab>True</Show_Completed_Tab>
@@ -116,11 +111,11 @@
 		<!-- Empire Starting Forces -->
 
 		<Starting_Credits> Empire,  8000 </Starting_Credits>
-		<Starting_Tech_Level> Empire, 2 </Starting_Tech_Level>
+		<Starting_Tech_Level> Empire, 5 </Starting_Tech_Level>
 		<Max_Tech_Level> Empire, 5 </Max_Tech_Level>
 
 		<!-- Coruscant Space Forces -->
-		<Starting_Forces> Empire, Coruscant, Empire_Star_Base_2 </Starting_Forces>
+		<Starting_Forces> Empire, Coruscant, Empire_Star_Base_5 </Starting_Forces>
 		<Starting_Forces> Empire, Coruscant, Tartan_Patrol_Cruiser </Starting_Forces>
 		<Starting_Forces> Empire, Coruscant, Acclamator_Assault_Ship </Starting_Forces>
 		<!-- Coruscant Land Forces -->
@@ -129,24 +124,6 @@
 		<Starting_Forces> Empire, Coruscant, Imperial_Anti_Infantry_Brigade </Starting_Forces>
 		<Starting_Forces> Empire, Coruscant, Imperial_Heavy_Scout_Squad </Starting_Forces>
 
-		<!-- Underworld Starting Forces -->
-
-		<Starting_Credits> Underworld,  12000 </Starting_Credits>
-		<Starting_Tech_Level> Underworld, 2 </Starting_Tech_Level>
-		<Max_Tech_Level> Underworld, 5 </Max_Tech_Level>
-
-
-		<!-- Kuat Space Forces -->
-		<Starting_Forces> Underworld, Kuat, Underworld_Star_Base_2 </Starting_Forces>
-		<Starting_Forces> Underworld, Kuat, StarViper_Squadron </Starting_Forces>
-		<Starting_Forces> Underworld, Kuat, Skipray_Squadron </Starting_Forces>
-		<Starting_Forces> Underworld, Kuat, Vengeance_Frigate </Starting_Forces>
-		<Starting_Forces> Underworld, Kuat, Vengeance_Frigate </Starting_Forces>
-		<!-- Kuat Land Forces -->
-		<Starting_Forces> Underworld, Kuat, U_Ground_Droid_Works </Starting_Forces>
-		<Starting_Forces> Underworld, Kuat, Underworld_Disruptor_Merc_Squad </Starting_Forces>
-		<Starting_Forces> Underworld, Kuat, Destroyer_Droid_Company </Starting_Forces>
-		<Starting_Forces> Underworld, Kuat, Destroyer_Droid_Company </Starting_Forces>
 	</Campaign>
 
 </Campaigns>

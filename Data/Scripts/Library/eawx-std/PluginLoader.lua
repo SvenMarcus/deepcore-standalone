@@ -1,23 +1,20 @@
---**************************************************************************************************
---*    _______ __                                                                                  *
---*   |_     _|  |--.----.---.-.--.--.--.-----.-----.                                              *
---*     |   | |     |   _|  _  |  |  |  |     |__ --|                                              *
---*     |___| |__|__|__| |___._|________|__|__|_____|                                              *
---*    ______                                                                                      *
---*   |   __ \.-----.--.--.-----.-----.-----.-----.                                                *
---*   |      <|  -__|  |  |  -__|     |  _  |  -__|                                                *
---*   |___|__||_____|\___/|_____|__|__|___  |_____|                                                *
---*                                   |_____|                                                      *
---*                                                                                                *
---*                                                                                                *
---*       File:              PluginLoader.lua                                                      *
---*       File Created:      Saturday, 22nd February 2020 05:33                                    *
---*       Author:            [TR] Pox                                                              *
---*       Last Modified:     Sunday, 23rd February 2020 10:39                                      *
---*       Modified By:       [TR] Pox                                                              *
---*       Copyright:         Thrawns Revenge Development Team                                      *
---*       License:           This code may not be used without the author's explicit permission    *
---**************************************************************************************************
+--*****************************************************************************
+--*    _______ __
+--*   |_     _|  |--.----.---.-.--.--.--.-----.-----.
+--*     |   | |     |   _|  _  |  |  |  |     |__ --|
+--*     |___| |__|__|__| |___._|________|__|__|_____|
+--*    ______
+--*   |   __ \.-----.--.--.-----.-----.-----.-----.
+--*   |      <|  -__|  |  |  -__|     |  _  |  -__|
+--*   |___|__||_____|\___/|_____|__|__|___  |_____|
+--*                                   |_____|
+--*
+--*   @Author:              [EaWX]Pox
+--*   @Date:                2020-12-23
+--*   @Project:             Empire at War Expanded
+--*   @Filename:            PluginLoader.lua
+--*   @License:             MIT
+--*****************************************************************************
 
 require("eawx-std/class")
 
@@ -59,7 +56,7 @@ function PluginLoader:load_plugin(plugin_name, unresolved_plugins)
     end
 
     unresolved_plugins[plugin_name] = true
-    local plugin_def = require(self.plugin_folder.. "/" .. plugin_name .. "/init")
+    local plugin_def = require(self.plugin_folder .. "/" .. plugin_name .. "/init")
 
     local loaded_dependencies = {}
     if plugin_def.dependencies and table.getn(plugin_def.dependencies) > 0 then

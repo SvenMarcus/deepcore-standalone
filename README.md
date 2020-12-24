@@ -3,13 +3,16 @@
   - [License](#license)
   - [Installation](#installation)
   - [Basic set up](#basic-set-up)
-    - [The main GC Lua file](#the-main-gc-lua-file)
-    - [Defining a plugin](#defining-a-plugin)
+    - [Using the framework in Galactic Conquest](#using-the-framework-in-galactic-conquest)
+    - [Using the framework with a game object script](#using-the-framework-with-a-game-object-script)
+    - [Defining a Galactic Conquest plugin](#defining-a-galactic-conquest-plugin)
     - [Using the events from the GalacticConquest object](#using-the-events-from-the-galacticconquest-object)
+    - [Defining a game object plugin](#defining-a-game-object-plugin)
     - [Defining a plugin with dependencies](#defining-a-plugin-with-dependencies)
   - [Using eawx-crossplot for communication between story plots](#using-eawx-crossplot-for-communication-between-story-plots)
   - [The GalacticConquest class](#the-galacticconquest-class)
     - [Attributes](#attributes)
+    - [Methods](#methods)
     - [Events](#events)
   - [The Planet class](#the-planet-class)
   - [Quick Reference](#quick-reference)
@@ -29,16 +32,16 @@ To combat this complexity we have introduced a framework that comes with a plugi
 
 ## License
 
-You are free to use the framework in other Empire at War mods on the condition that the `eawx-` folder names and the names of the contained files are not changed. Moreover proper credits must be given in the mod's Readme.
+This project uses the [MIT License](LICENSE)
 
 ## Installation
 
 Drop the `eawx-` directories into your mod's `Data/Scripts/Library` folder. Override the default `GameScoring.lua` in `Data/Scripts/Miscellaneous` with the one provided in this repository.
 
 ## Basic set up
-### The main GC Lua file
+### Using the framework in Galactic Conquest
 
-A single story plot in a GC should be set as the container for the EawX Framework. A high `ServiceRate` must be set (we use 0.1) in order to guarantee that all plugins will receive updates at the correct time. To instantiate the `EawXMod` object that loads and updates your plugins you will at least need to pass a list of playable factions into its constructor function. Additional optional arguments are a `context` table that can include variables you want to pass to every plugin `init()` function and a plugin folder list. If no plugin folder list is specified the plugin system will load the file `eawx-plugins/InstalledPlugins.lua`.
+A single story plot in a GC should be set as the container for the EawX Framework. A high `ServiceRate` must be set (we use 0.1) in order to guarantee that all plugins will receive updates at the correct time. The `EawXMod` object that loads and updates your plugins can be instantiated without any arguments or with a `context` table that can include variables you want to pass to every plugin `init()` function and a plugin folder list. If no plugin folder list is specified the plugin system will load the file `eawx-plugins/InstalledPlugins.lua`.
 
 <details>
   <summary>Click to see the main GC Lua file</summary>
@@ -60,19 +63,11 @@ end
 
 function Begin_GC(message)
     if message == OnEnter then
-        -- We need a list of playable factions for the GalacticConquest
-        -- object instantiated in EawXMod
-        local playable_factions = {
-            "EMPIRE",
-            "REBEL",
-            "UNDERWORLD"
-        }
-
         -- The context table allows you to pass variables to
         -- the init() function of your plugins
         local context = {}
 
-        ActiveMod = EawXMod(playable_factions, context)
+        ActiveMod = EawXMod(context)
     elseif message == OnUpdate then
         ActiveMod:update()
     end
@@ -80,7 +75,36 @@ end
 ```
 </details>
 
-### Defining a plugin
+### Using the framework with a game object script
+
+The framework isn't limited to Galactic Conquest. You can also use it from a game object script. Instead of using `EawXMod` the game object script requires an instance of `EawXGameObject`. Just like with `EawXMod` the `EawXGameObject` class can be instantiated with optional `context` and `installed_plugins` tables. It is intended to be used during tactical mode only.
+
+```lua
+require("PGDebug")
+require("PGStateMachine")
+
+require("eawx-std/EawXGameObject")
+
+function Definitions()
+    DebugMessage("%s -- In Definitions", tostring(Script))
+
+    ServiceRate = 0.1
+
+    Define_State("Game_Object_Main", Game_Object_Main)
+end
+
+function Game_Object_Main(message)
+    if message == OnEnter then
+        GameObject = EawXGameObject(context)
+    elseif message == OnUpdate then
+        GameObject:update()
+    end
+end
+```
+</details>
+
+
+### Defining a Galactic Conquest plugin
 
 All plugins must be specified in folders inside the `eawx-plugins` directory. They must include a file called `init.lua` that returns the instantiated plugin object.
 
@@ -147,6 +171,12 @@ function ProductionFinishedListener:on_production_finished(planet, object_type_n
 end
 ```
 </details>
+
+
+### Defining a game object plugin
+
+Defining a game object plugin is essentially the same as defining a galactic plugin. However, since `EawXGameObject` is only intended to be used from tactical mode
+
 
 ### Defining a plugin with dependencies
 
@@ -282,6 +312,15 @@ end
 | Planets     | table<string, Planet>     | Key: Planet name, Value: Planet object |
 | Events      | table<string, Observable> | Key: Event name, Value: Event object   |
 
+
+### Methods
+
+| Method                                          | Return type           | Description                              |
+| ----------------------------------------------- | --------------------- | ---------------------------------------- |
+| get_all_planets_by_faction(faction)             | table<string, Planet> | Key: Planet name, Value: Planet object   |
+| get_number_of_planets_owned_by_faction(faction) | number                | Number of planets owned by given faction |
+
+
 ### Events
 
 | Event name                 | Event Args for listeners | Arg Description                            |
@@ -294,6 +333,7 @@ end
 | TacticalBattleStarting     | -                        | -                                          |
 | TacticalBattleEnding       | -                        | -                                          |
 
+
 ## The Planet class
 
 EawX wraps EaW's planet objects in a custom `Planet` class. `ctx.galactic_conquest.Planets` as well as planets received from its events are all instances of the `Planet` class.
@@ -304,6 +344,7 @@ EawX wraps EaW's planet objects in a custom `Planet` class. `ctx.galactic_conque
 | Planet:get_game_object()             | GameObjectWrapper |
 | Planet:get_name()                    | string            |
 | Planet:has_structure(structure_name) | boolean           |
+
 
 ## Quick Reference
 

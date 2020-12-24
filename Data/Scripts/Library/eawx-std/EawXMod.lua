@@ -1,23 +1,20 @@
---**************************************************************************************************
---*    _______ __                                                                                  *
---*   |_     _|  |--.----.---.-.--.--.--.-----.-----.                                              *
---*     |   | |     |   _|  _  |  |  |  |     |__ --|                                              *
---*     |___| |__|__|__| |___._|________|__|__|_____|                                              *
---*    ______                                                                                      *
---*   |   __ \.-----.--.--.-----.-----.-----.-----.                                                *
---*   |      <|  -__|  |  |  -__|     |  _  |  -__|                                                *
---*   |___|__||_____|\___/|_____|__|__|___  |_____|                                                *
---*                                   |_____|                                                      *
---*                                                                                                *
---*                                                                                                *
---*       File:              EawXMod.lua                                                           *
---*       File Created:      Sunday, 23rd February 2020 06:32                                      *
---*       Author:            [TR] Pox                                                              *
---*       Last Modified:     Monday, 24th February 2020 03:13                                      *
---*       Modified By:       [TR] Pox                                                              *
---*       Copyright:         Thrawns Revenge Development Team                                      *
---*       License:           This code may not be used without the author's explicit permission    *
---**************************************************************************************************
+--*****************************************************************************
+--*    _______ __
+--*   |_     _|  |--.----.---.-.--.--.--.-----.-----.
+--*     |   | |     |   _|  _  |  |  |  |     |__ --|
+--*     |___| |__|__|__| |___._|________|__|__|_____|
+--*    ______
+--*   |   __ \.-----.--.--.-----.-----.-----.-----.
+--*   |      <|  -__|  |  |  -__|     |  _  |  -__|
+--*   |___|__||_____|\___/|_____|__|__|___  |_____|
+--*                                   |_____|
+--*
+--*   @Author:              [EaWX]Pox
+--*   @Date:                2020-12-23
+--*   @Project:             Empire at War Expanded
+--*   @Filename:            EawXMod.lua
+--*   @License:             MIT
+--*****************************************************************************
 
 require("eawx-std/class")
 require("eawx-crossplot/crossplot")
@@ -28,9 +25,9 @@ require("eawx-std/PluginLoader")
 ---@class EawXMod
 EawXMod = class()
 
-function EawXMod:new(playable_factions, context, plugin_list)
+function EawXMod:new(context, plugin_list)
     crossplot:galactic()
-    self.galactic_conquest = GalacticConquest(playable_factions)
+    self.galactic_conquest = GalacticConquest()
 
     if not context then
         context = {}
