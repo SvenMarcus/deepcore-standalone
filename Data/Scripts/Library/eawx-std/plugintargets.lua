@@ -28,3 +28,14 @@ function PluginTargets.interval(seconds)
         }
     )
 end
+
+function PluginTargets.story_flag(flag_name, player)
+    return setmetatable(
+        {flag_name = flag_name, player = player or Find_Player("local")},
+        {
+            __call = function(t)
+                return Check_Story_Flag(t.player, t.flag_name, nil, true)
+            end
+        }
+    )
+end

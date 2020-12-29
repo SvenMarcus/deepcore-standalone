@@ -1,5 +1,4 @@
-<?xml version="1.0" ?>
-
+<?xml version="1.0"?>
 
 
 <!--***************************************************-->
@@ -7,12 +6,29 @@
 <!--***************************************************-->
 
 
-
 <Story>
-	
+
 	<Event Name="Universal_Story_Start">
 		<Event_Type>STORY_ELAPSED</Event_Type>
 		<Event_Param1>0</Event_Param1>
+	</Event>
+
+	<Event Name="Click_Filter">
+		<Event_Type>STORY_CLICK_GUI</Event_Type>
+		<Event_Param1>b_filters0</Event_Param1>
+		<Reward_Type>TRIGGER_AI</Reward_Type>
+		<Reward_Param1>SELECT_CREDIT_FILTER</Reward_Param1>
+		<Reward_Param2></Reward_Param2>
+		<Perpetual>true</Perpetual>
+	</Event>
+
+	<Event Name="Filter_Clicked">
+		<Event_Type>STORY_TRIGGER</Event_Type>
+		<Reward_Type>SCREEN_TEXT</Reward_Type>
+		<Reward_Param1>Filter was clicked</Reward_Param1>
+		<Reward_Param2>5</Reward_Param2>
+		<Prereq>Click_Filter</Prereq>
+		<Perpetual>true</Perpetual>
 	</Event>
 
 </Story>
