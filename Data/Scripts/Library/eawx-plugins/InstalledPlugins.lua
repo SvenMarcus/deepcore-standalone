@@ -18,5 +18,6 @@
 
 return {
     "production-listener",
-    "weekly-game-message-service"
+    "weekly-game-message-service",
+    "weekly-kuat-flip"
 }

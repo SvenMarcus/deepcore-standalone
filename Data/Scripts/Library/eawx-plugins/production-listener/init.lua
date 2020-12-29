@@ -16,11 +16,12 @@
 --*   @License:             MIT
 --*****************************************************************************
 
+require("eawx-std/plugintargets")
 require("eawx-plugins/production-listener/ProductionFinishedListener")
 
 return {
     -- The "passive" target means we don't expect to be updated
-    target = "passive",
+    target = PluginTargets.never(),
     init = function(self, ctx)
         ---@type GalacticConquest
         local galactic_conquest = ctx.galactic_conquest

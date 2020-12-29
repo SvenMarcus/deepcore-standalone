@@ -19,11 +19,12 @@
 --*       License:           This code may not be used without the author's explicit permission    *
 --**************************************************************************************************
 
+require("eawx-std/plugintargets")
 require("eawx-plugins/weekly-game-message-service/GameMessageService")
 
 return {
     -- weekly-update gets updated every week. This also means we have to implement an "update()" function!
-    target = "weekly-update",
+    target = PluginTargets.interval(45),
     -- We can specify plugin dependencies in this table
     dependencies = {"production-listener"},
     -- The plugins we specified in the dependencies table will be passed to the init function in order

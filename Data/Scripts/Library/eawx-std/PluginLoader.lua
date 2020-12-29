@@ -24,7 +24,8 @@ PluginLoader = class()
 function PluginLoader:new(ctx, plugin_folder)
     self.plugin_folder = plugin_folder
     self.loaded_plugins = {}
-    self.plugins_by_target = {}
+    self.plugin_containers = {}
+    self.planet_dependent_plugin_containers = {}
     self.context = ctx or {}
 end
 
@@ -38,10 +39,16 @@ function PluginLoader:load(plugin_list)
     for _, plugin_name in pairs(plugin_list) do
         self:load_plugin(plugin_name, unresolved_plugins)
     end
+
+    DebugMessage("Loaded %s plugins", tostring(table.getn(self.plugin_containers)))
 end
 
-function PluginLoader:get_plugins_for_target(target_name)
-    return self.plugins_by_target[target_name] or {}
+function PluginLoader:get_plugin_containers()
+    return self.plugin_containers
+end
+
+function PluginLoader:get_planet_dependent_plugin_containers()
+    return self.planet_dependent_plugin_containers
 end
 
 ---@private
@@ -70,10 +77,16 @@ function PluginLoader:load_plugin(plugin_name, unresolved_plugins)
     end
 
     self.loaded_plugins[plugin_name] = plugin_def:init(self.context, unpack(loaded_dependencies))
-    local target = plugin_def.target
-    if not self.plugins_by_target[target] then
-        self.plugins_by_target[target] = {}
+    local container = {
+        target = plugin_def.target,
+        plugin = self.loaded_plugins[plugin_name]
+    }
+
+    if plugin_def.requires_planets then
+        table.insert(self.planet_dependent_plugin_containers, container)
+    else
+        table.insert(self.plugin_containers, container)
     end
-    table.insert(self.plugins_by_target[target], self.loaded_plugins[plugin_name])
+
     unresolved_plugins[plugin_name] = nil
 end

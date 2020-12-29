@@ -9,7 +9,7 @@ function Definitions()
 
     ServiceRate = 0.1
 
-    StoryModeEvents = {Zoom_Zoom = Begin_GC}
+    StoryModeEvents = {Universal_Story_Start = Begin_GC}
 end
 
 function Begin_GC(message)

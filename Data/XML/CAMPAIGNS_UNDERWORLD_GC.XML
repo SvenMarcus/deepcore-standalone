@@ -36,7 +36,7 @@
 
 		<Starting_Active_Player> Empire </Starting_Active_Player>
 
-		<Rebel_Story_Name>Story_Plots_Sandbox_27_Underworld.xml</Rebel_Story_Name>
+		<Empire_Story_Name>Story_Plots_Sandbox_27_Underworld.xml</Empire_Story_Name>
 
 		<AI_Player_Control> Empire, SandboxHuman </AI_Player_Control>
 		<AI_Player_Control> Rebel, None </AI_Player_Control>
