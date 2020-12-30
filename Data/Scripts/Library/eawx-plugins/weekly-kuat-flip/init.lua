@@ -22,11 +22,9 @@ return {
     target = PluginTargets.interval(45),
     requires_planets = true,
     init = function(self, ctx)
-        DebugMessage("Initializing Kuat flip")
         return {
             ---@param planet Planet
             update = function(self, planet)
-                DebugMessage("Updating Kuat flip with %s", tostring(planet:get_name()))
                 if planet:get_game_object() ~= FindPlanet("Kuat") then
                     return
                 end

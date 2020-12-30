@@ -12,6 +12,10 @@
       - [Methods](#methods)
       - [Events](#events)
     - [The Planet class](#the-planet-class)
+  - [Overview over the included example plugins](#overview-over-the-included-example-plugins)
+    - [Galactic](#galactic)
+    - [Tactical](#tactical)
+      - [Space](#space)
   - [Basic set up](#basic-set-up)
     - [Using the framework in Galactic Conquest](#using-the-framework-in-galactic-conquest)
     - [Using the framework with a game object script](#using-the-framework-with-a-game-object-script)
@@ -132,6 +136,20 @@ EawX wraps EaW's planet objects in a custom `Planet` class. `ctx.galactic_conque
 | Planet:get_name()                    | string            |
 | Planet:has_structure(structure_name) | boolean           |
 
+## Overview over the included example plugins
+
+### Galactic
+
+- production-listener: A plugin that refunds the cost of a unit upon construction. Demonstrates how to use the events of the `GalacticConquest` class.
+- weekly-game-message-service: A plugin that shows a pop up message depending on the amount of produced objects. Demonstrates how to use plugin dependencies.
+- weekly-kuat-flip: Flips the affiliation of Kuat between the Empire and the Rebels every week. 
+- ui-listener: Shows a pop up message when the player clicks the credit filter on the commandbar in galactic mode. Demonstrates the `story_flag` plugin target.
+
+### Tactical 
+
+#### Space
+
+- microjump: An ability that teleports a unit to a given position using the weaken enemy ability. It is attached to the Tartan Cruiser.
 
 ## Basic set up
 ### Using the framework in Galactic Conquest
