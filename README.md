@@ -149,7 +149,7 @@ EawX wraps EaW's planet objects in a custom `Planet` class. `ctx.galactic_conque
 
 #### Space
 
-- microjump: An ability that teleports a unit to a given position using the weaken enemy ability. It is attached to the Tartan Cruiser.
+- microjump: An ability that teleports a unit to a given position using the weaken enemy ability. It is attached to the Tartan Cruiser. Unlike the other included plugins this is not just an example, but a fully usable ability and is also used in Empire at War Expanded: Thrawns Revenge.
 
 ## Basic set up
 ### Using the framework in Galactic Conquest
