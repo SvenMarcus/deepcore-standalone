@@ -95,6 +95,10 @@ end
 
 function Game_Object_Main(message)
     if message == OnEnter then
+        if Get_Game_Mode() ~= "Space" then
+            ScriptExit()
+        end
+
         GameObject = EawXGameObject(context)
     elseif message == OnUpdate then
         GameObject:update()
@@ -110,7 +114,7 @@ All plugins must be specified in folders inside the `eawx-plugins` directory. Th
 
 The `init()` function must at least be able to receive the `self` argument. The `ctx` argument refers to the `context` table that was defined in the main GC Lua file. It will be passed to the `init()`  function when the plugin loader initialises the plugin. `galactic_conquest` is an object provided by the EawX framework that contains a list of planets in the GC, the human player object and several observable events. It will be added to the `context` table automatically. 
 
-The `target` entry in the plugin definition specifies at when the plugin will be updated. In the following example the `target` is passive, meaing the plugin does not expect to updated explicitly.
+The `target` entry in the plugin definition specifies at when the plugin will be updated. In the following example the `target` is `never()`, meaning the plugin does not expect to be updated explicitly.
 
 After defining a plugin make sure to add them to the list in `InstalledPlugins.lua`.
 
@@ -118,11 +122,12 @@ After defining a plugin make sure to add them to the list in `InstalledPlugins.l
   <summary>Click to see init.lua of production-listener</summary>
 
 ```lua
+require("eawx-std/plugintargets")
 require("eawx-plugins/production-listener/ProductionFinishedListener")
 
 return {
-    -- The "passive" target means we don't expect to be updated
-    target = "passive",
+    -- The never() target means we don't expect to be updated
+    target = PluginTarget.never(),
     init = function(self, ctx)
         ---@type GalacticConquest
         local galactic_conquest = ctx.galactic_conquest

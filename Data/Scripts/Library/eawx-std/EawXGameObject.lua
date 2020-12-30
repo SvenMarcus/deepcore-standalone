@@ -33,14 +33,16 @@ function EawXGameObject:new(context, plugin_list)
     plugin_loader:load(plugin_list)
     DebugMessage("EawXGameObject -- plugins loaded successfully")
 
-    self.frame_update_plugins = plugin_loader:get_plugins_for_target("frame-update")
-    self.passive_plugins = plugin_loader:get_plugins_for_target("passive")
+    self.plugin_containers = plugin_loader:get_plugin_containers()
 end
 
 function EawXGameObject:update()
     crossplot:update()
-    for _, plugin in pairs(self.frame_update_plugins) do
-        plugin:update()
+
+    for _, plugin_container in ipairs(self.plugin_containers) do
+        if plugin_container.target() then
+            plugin_container.plugin:update()
+        end
     end
 end
 

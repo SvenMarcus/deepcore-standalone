@@ -26,7 +26,6 @@ require("eawx-std/PluginLoader")
 EawXMod = class()
 
 function EawXMod:new(context, plugin_list)
-    DebugMessage("In EaWXMod Constructor")
     crossplot:galactic()
     self.galactic_conquest = GalacticConquest()
 
@@ -41,10 +40,6 @@ function EawXMod:new(context, plugin_list)
 
     self.plugin_containers = plugin_loader:get_plugin_containers()
     self.planet_plugin_containers = plugin_loader:get_planet_dependent_plugin_containers()
-
-    DebugMessage("Finished loading plugins")
-    self.last_week_update = 0
-    self.week_duration = 45
 end
 
 function EawXMod:update()
