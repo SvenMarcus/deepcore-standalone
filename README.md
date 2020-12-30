@@ -174,29 +174,32 @@ end
 
 The framework isn't limited to Galactic Conquest. You can also use it from a game object script. Instead of using `EawXMod` the game object script requires an instance of `EawXGameObject`. Just like with `EawXMod` the `EawXGameObject` class can be instantiated with optional `context` and `installed_plugins` tables. It is intended to be used during tactical mode only.
 
-```lua
-require("PGDebug")
-require("PGStateMachine")
+<details>
+  <summary>Click to see the game object Lua file</summary>
 
-require("eawx-std/EawXGameObject")
+```lua
+require("PGCommands")
+require("PGStateMachine")
 
 function Definitions()
     DebugMessage("%s -- In Definitions", tostring(Script))
 
-    ServiceRate = 0.1
-
-    Define_State("Game_Object_Main", Game_Object_Main)
+    Define_State("State_Init", State_Init)
 end
 
-function Game_Object_Main(message)
+function State_Init(message)
     if message == OnEnter then
         if Get_Game_Mode() ~= "Space" then
             ScriptExit()
         end
 
-        GameObject = EawXGameObject(context)
+        local context = {}
+        local plugins = { "microjump" }
+
+        EawXGameObject = require("eawx-std/EawXGameObject")
+        EawXObj = EawXGameObject(context, plugins)
     elseif message == OnUpdate then
-        GameObject:update()
+        EawXObj:update()
     end
 end
 ```
