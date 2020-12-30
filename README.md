@@ -2,6 +2,16 @@
   - [Introduction](#introduction)
   - [License](#license)
   - [Installation](#installation)
+  - [Quick Reference](#quick-reference)
+    - [Plugin folders](#plugin-folders)
+    - [Skeleton of a plugin definition](#skeleton-of-a-plugin-definition)
+    - [Skeleton of a plugin class](#skeleton-of-a-plugin-class)
+    - [Builtin plugin targets](#builtin-plugin-targets)
+    - [The GalacticConquest class](#the-galacticconquest-class)
+      - [Attributes](#attributes)
+      - [Methods](#methods)
+      - [Events](#events)
+    - [The Planet class](#the-planet-class)
   - [Basic set up](#basic-set-up)
     - [Using the framework in Galactic Conquest](#using-the-framework-in-galactic-conquest)
     - [Using the framework with a game object script](#using-the-framework-with-a-game-object-script)
@@ -10,16 +20,6 @@
     - [Using the events from the GalacticConquest object](#using-the-events-from-the-galacticconquest-object)
     - [Defining a plugin with dependencies](#defining-a-plugin-with-dependencies)
   - [Using eawx-crossplot for communication between story plots](#using-eawx-crossplot-for-communication-between-story-plots)
-  - [The GalacticConquest class](#the-galacticconquest-class)
-    - [Attributes](#attributes)
-    - [Methods](#methods)
-    - [Events](#events)
-  - [The Planet class](#the-planet-class)
-  - [Quick Reference](#quick-reference)
-    - [Plugin folders](#plugin-folders)
-    - [Skeleton of a plugin definition](#skeleton-of-a-plugin-definition)
-    - [Skeleton of a plugin class](#skeleton-of-a-plugin-class)
-    - [Possible plugin targets](#possible-plugin-targets)
 
 # The EawX Galactic Framework
 
@@ -37,6 +37,99 @@ This project uses the [MIT License](LICENSE)
 ## Installation
 
 Drop the `eawx-` directories into your mod's `Data/Scripts/Library` folder. Override the default `GameScoring.lua` in `Data/Scripts/Miscellaneous` with the one provided in this repository.
+
+## Quick Reference
+
+### Plugin folders
+
+All plugins must either be located in the `eawx-plugins` directory (for galactic conquest) or the `eawx-plugins-gameobject-space` or `eawx-plugins-gameobject-land` directories (for game objects). 
+They also need to contain a file called `init.lua` that returns a plugin definition as specified in the following section.
+
+### Skeleton of a plugin definition
+
+```lua
+require("eawx-std/plugintargets")
+require("eawx-plugins/my-plugin/MyPlugin")
+
+return {
+    target = PluginTargets.always(),
+    requires_planets = false,
+    dependencies = { "another-plugin" },
+    init = function(self, ctx, the_other_plugin)
+        return MyPlugin(the_other_plugin)
+    end
+}
+```
+
+### Skeleton of a plugin class
+
+```lua
+require("eawx-std/class")
+
+---@class MyPlugin
+MyPlugin = class()
+
+function MyPlugin:new(args)
+    self.args = args
+end
+
+function MyPlugin:update()
+
+end
+```
+
+### Builtin plugin targets
+
+| Name       | Parameters            | Description                                                                   |
+| ---------- | --------------------- | ----------------------------------------------------------------------------- |
+| always     | -                     | Allows a plugin to be updated every frame                                     |
+| never      | -                     | Never allows updates. Use this if you want to react to observable events only |
+| interval   | number                | Updates the plugin every X seconds                                            |
+| story_flag | string, PlayerWrapper | Uses `Check_Story_Flag` to determine if an update is allowed                  |
+
+### The GalacticConquest class
+
+#### Attributes
+
+| Attribute   | Type                      | Description                            |
+| ----------- | ------------------------- | -------------------------------------- |
+| HumanPlayer | PlayerWrapper             | The human player                       |
+| Planets     | table<string, Planet>     | Key: Planet name, Value: Planet object |
+| Events      | table<string, Observable> | Key: Event name, Value: Event object   |
+
+
+#### Methods
+
+| Method                                          | Return type           | Description                              |
+| ----------------------------------------------- | --------------------- | ---------------------------------------- |
+| get_all_planets_by_faction(faction)             | table<string, Planet> | Key: Planet name, Value: Planet object   |
+| get_number_of_planets_owned_by_faction(faction) | number                | Number of planets owned by given faction |
+
+
+#### Events
+
+| Event name                 | Event Args for listeners | Arg Description                            |
+| -------------------------- | ------------------------ | ------------------------------------------ |
+| PlanetOwnerChanged         | Planet                   | -                                          |
+| GalacticProductionStarted  | Planet, string           | The string represents the object type name |
+| GalacticProductionFinished | Planet, string           | The string represents the object type name |
+| GalacticProductionCanceled | Planet, string           | The string represents the object type name |
+| GalacticHeroKilled         | string                   | The hero type name                         |
+| TacticalBattleStarting     | -                        | -                                          |
+| TacticalBattleEnding       | -                        | -                                          |
+
+
+### The Planet class
+
+EawX wraps EaW's planet objects in a custom `Planet` class. `ctx.galactic_conquest.Planets` as well as planets received from its events are all instances of the `Planet` class.
+
+| Methods                              | Return type       |
+| ------------------------------------ | ----------------- |
+| Planet:get_owner()                   | PlayerWrapper     |
+| Planet:get_game_object()             | GameObjectWrapper |
+| Planet:get_name()                    | string            |
+| Planet:has_structure(structure_name) | boolean           |
+
 
 ## Basic set up
 ### Using the framework in Galactic Conquest
@@ -139,12 +232,12 @@ return {
 
 The framework comes with the following plugin targets out of the box:
 
-| Name       | Parameters           | Description                                                                   |
-| ---------- | -------------------- | ----------------------------------------------------------------------------- |
-| always     | -                    | Allows a plugin to be updated every frame                                     |
-| never      | -                    | Never allows updates. Use this if you want to react to observable events only |
-| interval   | number               | Updates the plugin every X seconds                                            |
-| story_flag | string, PlayerObject | Uses `Check_Story_Flag` to determine if an update is allowed                  |
+| Name       | Parameters            | Description                                                                   |
+| ---------- | --------------------- | ----------------------------------------------------------------------------- |
+| always     | -                     | Allows a plugin to be updated every frame                                     |
+| never      | -                     | Never allows updates. Use this if you want to react to observable events only |
+| interval   | number                | Updates the plugin every X seconds                                            |
+| story_flag | string, PlayerWrapper | Uses `Check_Story_Flag` to determine if an update is allowed                  |
 
 
 ### Implementing a plugin object
@@ -336,95 +429,4 @@ end
 ```
 </details>
 
-## The GalacticConquest class
 
-### Attributes
-
-| Attribute   | Type                      | Description                            |
-| ----------- | ------------------------- | -------------------------------------- |
-| HumanPlayer | PlayerWrapper             | The human player                       |
-| Planets     | table<string, Planet>     | Key: Planet name, Value: Planet object |
-| Events      | table<string, Observable> | Key: Event name, Value: Event object   |
-
-
-### Methods
-
-| Method                                          | Return type           | Description                              |
-| ----------------------------------------------- | --------------------- | ---------------------------------------- |
-| get_all_planets_by_faction(faction)             | table<string, Planet> | Key: Planet name, Value: Planet object   |
-| get_number_of_planets_owned_by_faction(faction) | number                | Number of planets owned by given faction |
-
-
-### Events
-
-| Event name                 | Event Args for listeners | Arg Description                            |
-| -------------------------- | ------------------------ | ------------------------------------------ |
-| PlanetOwnerChanged         | Planet                   | -                                          |
-| GalacticProductionStarted  | Planet, string           | The string represents the object type name |
-| GalacticProductionFinished | Planet, string           | The string represents the object type name |
-| GalacticProductionCanceled | Planet, string           | The string represents the object type name |
-| GalacticHeroKilled         | string                   | The hero type name                         |
-| TacticalBattleStarting     | -                        | -                                          |
-| TacticalBattleEnding       | -                        | -                                          |
-
-
-## The Planet class
-
-EawX wraps EaW's planet objects in a custom `Planet` class. `ctx.galactic_conquest.Planets` as well as planets received from its events are all instances of the `Planet` class.
-
-| Methods                              | Return type       |
-| ------------------------------------ | ----------------- |
-| Planet:get_owner()                   | PlayerWrapper     |
-| Planet:get_game_object()             | GameObjectWrapper |
-| Planet:get_name()                    | string            |
-| Planet:has_structure(structure_name) | boolean           |
-
-
-## Quick Reference
-
-### Plugin folders
-
-All plugin must be located in the `eawx-plugins` directory. They also need to contain a file called `init.lua` that returns a plugin definition as specified in the following section.
-
-### Skeleton of a plugin definition
-
-```lua
-require("eawx-plugins/my-plugin/MyPlugin")
-
-return {
-    target = "frame-update",
-    init = function(self, ctx)
-        return MyPlugin()
-    end
-}
-```
-
-### Skeleton of a plugin class
-
-```lua
-require("eawx-std/class")
-
----@class MyPlugin
-MyPlugin = class()
-
-function MyPlugin:new(args)
-    self.args = args
-end
-
-function MyPlugin:update()
-
-end
-```
-
-
-### Possible plugin targets
-
-| target               | update time   | needs update method | update arguments |
-| -------------------- | ------------- | ------------------- | ---------------- |
-| passive              | never         | no                  | -                |
-| frame-update         | OnUpdate      | yes                 | -                |
-| frame-planet-update  | OnUpdate      | yes                 | planet           |
-| weekly-update        | once per week | yes                 | -                |
-| weekly-planet-update | once per week | yes                 | planet           |
-
-**Note:** Targets containing `planet` run inside a loop over all planets in the GC. Every planet will be passed individually to the `update()` function.
