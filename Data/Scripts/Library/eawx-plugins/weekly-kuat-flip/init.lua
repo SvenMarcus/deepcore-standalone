@@ -10,22 +10,34 @@
 --*                                   |_____|
 --*
 --*   @Author:              [EaWX]Pox
---*   @Date:                2020-12-23
+--*   @Date:                2020-12-29
 --*   @Project:             Empire at War Expanded
 --*   @Filename:            init.lua
 --*   @License:             MIT
 --*****************************************************************************
 
 require("eawx-std/plugintargets")
-require("eawx-plugins/production-listener/ProductionFinishedListener")
 
 return {
-    -- The "passive" target means we don't expect to be updated
-    target = PluginTargets.never(),
+    target = PluginTargets.interval(45),
+    requires_planets = true,
     init = function(self, ctx)
-        ---@type GalacticConquest
-        local galactic_conquest = ctx.galactic_conquest
+        return {
+            ---@param planet Planet
+            update = function(self, planet)
+                if planet:get_game_object() ~= FindPlanet("Kuat") then
+                    return
+                end
 
-        return ProductionFinishedListener(galactic_conquest)
+                local empire = Find_Player("Empire")
+                local rebel = Find_Player("Rebel")
+                local current_owner = planet:get_owner()
+                if current_owner == empire then
+                    planet:get_game_object().Change_Owner(rebel)
+                else
+                    planet:get_game_object().Change_Owner(empire)
+                end
+            end
+        }
     end
 }

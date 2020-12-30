@@ -10,15 +10,18 @@
 --*                                   |_____|
 --*
 --*   @Author:              [EaWX]Pox
---*   @Date:                2020-12-23
+--*   @Date:                2020-12-30
 --*   @Project:             Empire at War Expanded
---*   @Filename:            InstalledPlugins.lua
+--*   @Filename:            init.lua
 --*   @License:             MIT
 --*****************************************************************************
 
+require("eawx-std/plugintargets")
+require("eawx-plugins-gameobject-space/microjump/Microjump")
+
 return {
-    "production-listener",
-    "weekly-game-message-service",
-    "weekly-kuat-flip",
-    "ui-listener"
+    target = PluginTargets.always(),
+    init = function(self, ctx)
+        return Microjump()
+    end
 }

@@ -1,22 +1,20 @@
---******************************************************************************
---     _______ __
---    |_     _|  |--.----.---.-.--.--.--.-----.-----.
---      |   | |     |   _|  _  |  |  |  |     |__ --|
---      |___| |__|__|__| |___._|________|__|__|_____|
---     ______
---    |   __ \.-----.--.--.-----.-----.-----.-----.
---    |      <|  -__|  |  |  -__|     |  _  |  -__|
---    |___|__||_____|\___/|_____|__|__|___  |_____|
---                                    |_____|
---*   @Author:              [TR]Pox
---*   @Date:                2018-03-10T01:31:48+01:00
---*   @Project:             Imperial Civil War
+--*****************************************************************************
+--*    _______ __
+--*   |_     _|  |--.----.---.-.--.--.--.-----.-----.
+--*     |   | |     |   _|  _  |  |  |  |     |__ --|
+--*     |___| |__|__|__| |___._|________|__|__|_____|
+--*    ______
+--*   |   __ \.-----.--.--.-----.-----.-----.-----.
+--*   |      <|  -__|  |  |  -__|     |  _  |  -__|
+--*   |___|__||_____|\___/|_____|__|__|___  |_____|
+--*                                   |_____|
+--*
+--*   @Author:              [EaWX]Pox
+--*   @Date:                2020-12-23
+--*   @Project:             Empire at War Expanded
 --*   @Filename:            GalacticEvents.lua
---*   @Last modified by:    [TR]Pox
---*   @Last modified time:  2018-03-10T19:30:51+01:00
---*   @License:             This source code may only be used with explicit permission from the developers
---*   @Copyright:           © TR: Imperial Civil War Development Team
---******************************************************************************
+--*   @License:             MIT
+--*****************************************************************************
 
 require("eawx-std/class")
 require("eawx-std/Observable")
@@ -30,13 +28,13 @@ function PlanetOwnerChangedEvent:new(planets)
     crossplot:subscribe("PLANET_OWNER_CHANGED", self.planet_owner_changed, self)
 end
 
-function PlanetOwnerChangedEvent:planet_owner_changed(planet_name)
+function PlanetOwnerChangedEvent:planet_owner_changed(planet_name, new_owner_name, old_owner_name)
     if not planet_name then
         return
     end
 
     local planet = self.planets[planet_name]
-    self:Notify(planet)
+    self:Notify(planet, new_owner_name, old_owner_name)
 end
 
 ---@class ProductionStartedEvent : Observable

@@ -2,21 +2,28 @@
   - [Introduction](#introduction)
   - [License](#license)
   - [Installation](#installation)
-  - [Basic set up](#basic-set-up)
-    - [The main GC Lua file](#the-main-gc-lua-file)
-    - [Defining a plugin](#defining-a-plugin)
-    - [Using the events from the GalacticConquest object](#using-the-events-from-the-galacticconquest-object)
-    - [Defining a plugin with dependencies](#defining-a-plugin-with-dependencies)
-  - [Using eawx-crossplot for communication between story plots](#using-eawx-crossplot-for-communication-between-story-plots)
-  - [The GalacticConquest class](#the-galacticconquest-class)
-    - [Attributes](#attributes)
-    - [Events](#events)
-  - [The Planet class](#the-planet-class)
   - [Quick Reference](#quick-reference)
     - [Plugin folders](#plugin-folders)
     - [Skeleton of a plugin definition](#skeleton-of-a-plugin-definition)
     - [Skeleton of a plugin class](#skeleton-of-a-plugin-class)
-    - [Possible plugin targets](#possible-plugin-targets)
+    - [Builtin plugin targets](#builtin-plugin-targets)
+    - [The GalacticConquest class](#the-galacticconquest-class)
+      - [Attributes](#attributes)
+      - [Methods](#methods)
+      - [Events](#events)
+    - [The Planet class](#the-planet-class)
+  - [Overview over the included example plugins](#overview-over-the-included-example-plugins)
+    - [Galactic](#galactic)
+    - [Tactical](#tactical)
+      - [Space](#space)
+  - [Basic set up](#basic-set-up)
+    - [Using the framework in Galactic Conquest](#using-the-framework-in-galactic-conquest)
+    - [Using the framework with a game object script](#using-the-framework-with-a-game-object-script)
+    - [Creating a plugin definition](#creating-a-plugin-definition)
+    - [Implementing a plugin object](#implementing-a-plugin-object)
+    - [Using the events from the GalacticConquest object](#using-the-events-from-the-galacticconquest-object)
+    - [Defining a plugin with dependencies](#defining-a-plugin-with-dependencies)
+  - [Using eawx-crossplot for communication between story plots](#using-eawx-crossplot-for-communication-between-story-plots)
 
 # The EawX Galactic Framework
 
@@ -27,18 +34,127 @@ This repository contains the source files of the Empire at War Expanded Galactic
 When adding more and more Lua based features to an Empire at War mod the number of modules that need to be updated every frame grows. Moreover managing dependencies and wiring the whole system together becomes increasingly complex.
 To combat this complexity we have introduced a framework that comes with a plugin system that loads modules from a plugin folder, resolves their specified dependencies automatically and updates them at a set time during the update cycle. Additionally it also includes a class system as well as crossplot, a powerful library to communicate across different story plots in EaW. The following sections explain its functionality in detail. If you just want to have quick look jump to the [Quick Reference](#quick-reference)
 
+This repository also includes a fix for a bug regarding using the `require` function in scripts attached to game objects in the `PGBase.lua` file.
+
 ## License
 
-You are free to use the framework in other Empire at War mods on the condition that the `eawx-` folder names and the names of the contained files are not changed. Moreover proper credits must be given in the mod's Readme.
+This project uses the [MIT License](LICENSE)
 
 ## Installation
 
-Drop the `eawx-` directories into your mod's `Data/Scripts/Library` folder. Override the default `GameScoring.lua` in `Data/Scripts/Miscellaneous` with the one provided in this repository.
+Drop the `eawx-` directories into your mod's `Data/Scripts/Library` folder. Override the default `GameScoring.lua` in `Data/Scripts/Miscellaneous` and `PGBase.lua` in `Data/Scripts/Library` with the ones provided in this repository.
+
+## Quick Reference
+
+### Plugin folders
+
+All plugins must either be located in the `eawx-plugins` directory (for galactic conquest) or the `eawx-plugins-gameobject-space` or `eawx-plugins-gameobject-land` directories (for game objects). 
+They also need to contain a file called `init.lua` that returns a plugin definition as specified in the following section.
+
+### Skeleton of a plugin definition
+
+```lua
+require("eawx-std/plugintargets")
+require("eawx-plugins/my-plugin/MyPlugin")
+
+return {
+    target = PluginTargets.always(),
+    requires_planets = false,
+    dependencies = { "another-plugin" },
+    init = function(self, ctx, the_other_plugin)
+        return MyPlugin(the_other_plugin)
+    end
+}
+```
+
+### Skeleton of a plugin class
+
+```lua
+require("eawx-std/class")
+
+---@class MyPlugin
+MyPlugin = class()
+
+function MyPlugin:new(args)
+    self.args = args
+end
+
+function MyPlugin:update()
+
+end
+```
+
+### Builtin plugin targets
+
+| Name       | Parameters            | Description                                                                   |
+| ---------- | --------------------- | ----------------------------------------------------------------------------- |
+| always     | -                     | Allows a plugin to be updated every frame                                     |
+| never      | -                     | Never allows updates. Use this if you want to react to observable events only |
+| interval   | number                | Updates the plugin every X seconds                                            |
+| story_flag | string, PlayerWrapper | Uses `Check_Story_Flag` to determine if an update is allowed                  |
+
+### The GalacticConquest class
+
+#### Attributes
+
+| Attribute   | Type                      | Description                            |
+| ----------- | ------------------------- | -------------------------------------- |
+| HumanPlayer | PlayerWrapper             | The human player                       |
+| Planets     | table<string, Planet>     | Key: Planet name, Value: Planet object |
+| Events      | table<string, Observable> | Key: Event name, Value: Event object   |
+
+
+#### Methods
+
+| Method                                          | Return type           | Description                              |
+| ----------------------------------------------- | --------------------- | ---------------------------------------- |
+| get_all_planets_by_faction(faction)             | table<string, Planet> | Key: Planet name, Value: Planet object   |
+| get_number_of_planets_owned_by_faction(faction) | number                | Number of planets owned by given faction |
+
+
+#### Events
+
+| Event name                 | Event Args for listeners | Arg Description                            |
+| -------------------------- | ------------------------ | ------------------------------------------ |
+| PlanetOwnerChanged         | Planet                   | -                                          |
+| GalacticProductionStarted  | Planet, string           | The string represents the object type name |
+| GalacticProductionFinished | Planet, string           | The string represents the object type name |
+| GalacticProductionCanceled | Planet, string           | The string represents the object type name |
+| GalacticHeroKilled         | string                   | The hero type name                         |
+| TacticalBattleStarting     | -                        | -                                          |
+| TacticalBattleEnding       | -                        | -                                          |
+
+
+### The Planet class
+
+EawX wraps EaW's planet objects in a custom `Planet` class. `ctx.galactic_conquest.Planets` as well as planets received from its events are all instances of the `Planet` class.
+
+| Methods                              | Return type       |
+| ------------------------------------ | ----------------- |
+| Planet:get_owner()                   | PlayerWrapper     |
+| Planet:get_game_object()             | GameObjectWrapper |
+| Planet:get_name()                    | string            |
+| Planet:has_structure(structure_name) | boolean           |
+
+## Overview over the included example plugins
+
+### Galactic
+
+- production-listener: A plugin that refunds the cost of a unit upon construction. Demonstrates how to use the events of the `GalacticConquest` class.
+- weekly-game-message-service: A plugin that shows a pop up message depending on the amount of produced objects. Demonstrates how to use plugin dependencies.
+- weekly-kuat-flip: Flips the affiliation of Kuat between the Empire and the Rebels every week. 
+- ui-listener: Shows a pop up message when the player clicks the credit filter on the commandbar in galactic mode. Demonstrates the `story_flag` plugin target.
+
+### Tactical 
+
+#### Space
+
+- microjump: An ability that teleports a unit to a given position using the weaken enemy ability. It is attached to the Tartan Cruiser. Unlike the other included plugins this is not just an example, but a fully usable ability and is also used in Empire at War Expanded: Thrawns Revenge.
 
 ## Basic set up
-### The main GC Lua file
+### Using the framework in Galactic Conquest
 
-A single story plot in a GC should be set as the container for the EawX Framework. A high `ServiceRate` must be set (we use 0.1) in order to guarantee that all plugins will receive updates at the correct time. To instantiate the `EawXMod` object that loads and updates your plugins you will at least need to pass a list of playable factions into its constructor function. Additional optional arguments are a `context` table that can include variables you want to pass to every plugin `init()` function and a plugin folder list. If no plugin folder list is specified the plugin system will load the file `eawx-plugins/InstalledPlugins.lua`.
+A single story plot in a GC should be set as the container for the EawX Framework. A high `ServiceRate` must be set (we use 0.1) in order to guarantee that all plugins will receive updates at the correct time. The `EawXMod` object that loads and updates your plugins can be instantiated without any arguments or with a `context` table that can include variables you want to pass to every plugin `init()` function and a plugin folder list. If no plugin folder list is specified the plugin system will load the file `eawx-plugins/InstalledPlugins.lua`.
 
 <details>
   <summary>Click to see the main GC Lua file</summary>
@@ -60,19 +176,11 @@ end
 
 function Begin_GC(message)
     if message == OnEnter then
-        -- We need a list of playable factions for the GalacticConquest
-        -- object instantiated in EawXMod
-        local playable_factions = {
-            "EMPIRE",
-            "REBEL",
-            "UNDERWORLD"
-        }
-
         -- The context table allows you to pass variables to
         -- the init() function of your plugins
         local context = {}
 
-        ActiveMod = EawXMod(playable_factions, context)
+        ActiveMod = EawXMod(context)
     elseif message == OnUpdate then
         ActiveMod:update()
     end
@@ -80,25 +188,61 @@ end
 ```
 </details>
 
-### Defining a plugin
+### Using the framework with a game object script
 
-All plugins must be specified in folders inside the `eawx-plugins` directory. They must include a file called `init.lua` that returns the instantiated plugin object.
+The framework isn't limited to Galactic Conquest. You can also use it from a game object script. Instead of using `EawXMod` the game object script requires an instance of `EawXGameObject`. Just like with `EawXMod` the `EawXGameObject` class can be instantiated with optional `context` and `installed_plugins` tables. It is intended to be used during tactical mode only.
 
-The `init()` function must at least be able to receive the `self` argument. The `ctx` argument refers to the `context` table that was defined in the main GC Lua file. It will be passed to the `init()`  function when the plugin loader initialises the plugin. `galactic_conquest` is an object provided by the EawX framework that contains a list of planets in the GC, the human player object and several observable events. It will be added to the `context` table automatically. 
+<details>
+  <summary>Click to see the game object Lua file</summary>
 
-The `target` entry in the plugin definition specifies at when the plugin will be updated. In the following example the `target` is passive, meaing the plugin does not expect to updated explicitly.
+```lua
+require("PGCommands")
+require("PGStateMachine")
 
-After defining a plugin make sure to add them to the list in `InstalledPlugins.lua`.
+function Definitions()
+    DebugMessage("%s -- In Definitions", tostring(Script))
+
+    Define_State("State_Init", State_Init)
+end
+
+function State_Init(message)
+    if message == OnEnter then
+        if Get_Game_Mode() ~= "Space" then
+            ScriptExit()
+        end
+
+        local context = {}
+        local plugins = { "microjump" }
+
+        EawXGameObject = require("eawx-std/EawXGameObject")
+        EawXObj = EawXGameObject(context, plugins)
+    elseif message == OnUpdate then
+        EawXObj:update()
+    end
+end
+```
+</details>
+
+
+### Creating a plugin definition
+
+Plugins for galactic conquest must be placed inside the `eawx-plugins` directory. Plugins for game objects are placed in the `eawx-plugins-gameobject-space` and `eawx-plugins-gameobject-land` directories. The `PluginLoader` will automatically determine the required directory based on the current game mode. 
+
+A plugin consists of a folder containing at least a file called `init.lua`. It is used to configure and create the plugin object. The `init.lua` must return a table with both `target` and `init` keys. The `target` specifies *when* or *how often* a plugin gets updated. The targets are defined in `plugintargets.lua` and can be extended with new targets if needed. `init` refers to a function that must at least be able to receive the `self` argument. Its second argument is the plugin `context` (`ctx`) table that was defined in the main GC or game object Lua function (see [Using the framework in Galactic Conquest](#using-the-framework-in-galactic-conquest) and [Using the framework with a game object script](#using-the-framework-with-a-game-object-script)). If you're defining a galactic conquest plugin the `ctx` table contains the `GalacticConquest` object in `ctx.galactic_conquest`. See [The GalacticConquest class](#the-galacticconquest-class) for more information on what functions it provides. The `init` function must return a plugin object with an `update` function (unless the target is `never()`).
+Galactic conquest plugins can set the `requires_planets` to `true`. In that case the plugin's update function will be called with one planet at a time.
+
+The code snippet below demonstrates the structure of the `init.lua` file.
 
 <details>
   <summary>Click to see init.lua of production-listener</summary>
 
 ```lua
+require("eawx-std/plugintargets")
 require("eawx-plugins/production-listener/ProductionFinishedListener")
 
 return {
-    -- The "passive" target means we don't expect to be updated
-    target = "passive",
+    target = PluginTargets.never(),
+    requires_planets = false,
     init = function(self, ctx)
         ---@type GalacticConquest
         local galactic_conquest = ctx.galactic_conquest
@@ -108,6 +252,42 @@ return {
 }
 ```
 </details>
+
+The framework comes with the following plugin targets out of the box:
+
+| Name       | Parameters            | Description                                                                   |
+| ---------- | --------------------- | ----------------------------------------------------------------------------- |
+| always     | -                     | Allows a plugin to be updated every frame                                     |
+| never      | -                     | Never allows updates. Use this if you want to react to observable events only |
+| interval   | number                | Updates the plugin every X seconds                                            |
+| story_flag | string, PlayerWrapper | Uses `Check_Story_Flag` to determine if an update is allowed                  |
+
+
+### Implementing a plugin object
+
+As specified in the previous section most plugin objects require an `update` function. Plugin objects can be created using a simple table inside the plugin definition:
+
+<details>
+  <summary>Click to see a simple table with an update function</summary>
+
+```lua
+require("eawx-std/plugintargets")
+
+return {
+    target = PluginTargets.interval(45)
+    init = function(self, ctx)
+        return {
+            update = function(self)
+                -- do something
+            end
+        }
+    end
+}
+```
+</details>
+
+They can also be objects located in another file like the `ProductionFinishedListener` from the previous section. The next section about events will show its code in more detail. To enhance readability and code structure I recommend placing plugin objects in separate files.
+
 
 ### Using the events from the GalacticConquest object
 
@@ -272,84 +452,4 @@ end
 ```
 </details>
 
-## The GalacticConquest class
 
-### Attributes
-
-| Attribute   | Type                      | Description                            |
-| ----------- | ------------------------- | -------------------------------------- |
-| HumanPlayer | PlayerWrapper             | The human player                       |
-| Planets     | table<string, Planet>     | Key: Planet name, Value: Planet object |
-| Events      | table<string, Observable> | Key: Event name, Value: Event object   |
-
-### Events
-
-| Event name                 | Event Args for listeners | Arg Description                            |
-| -------------------------- | ------------------------ | ------------------------------------------ |
-| PlanetOwnerChanged         | Planet                   | -                                          |
-| GalacticProductionStarted  | Planet, string           | The string represents the object type name |
-| GalacticProductionFinished | Planet, string           | The string represents the object type name |
-| GalacticProductionCanceled | Planet, string           | The string represents the object type name |
-| GalacticHeroKilled         | string                   | The hero type name                         |
-| TacticalBattleStarting     | -                        | -                                          |
-| TacticalBattleEnding       | -                        | -                                          |
-
-## The Planet class
-
-EawX wraps EaW's planet objects in a custom `Planet` class. `ctx.galactic_conquest.Planets` as well as planets received from its events are all instances of the `Planet` class.
-
-| Methods                              | Return type       |
-| ------------------------------------ | ----------------- |
-| Planet:get_owner()                   | PlayerWrapper     |
-| Planet:get_game_object()             | GameObjectWrapper |
-| Planet:get_name()                    | string            |
-| Planet:has_structure(structure_name) | boolean           |
-
-## Quick Reference
-
-### Plugin folders
-
-All plugin must be located in the `eawx-plugins` directory. They also need to contain a file called `init.lua` that returns a plugin definition as specified in the following section.
-
-### Skeleton of a plugin definition
-
-```lua
-require("eawx-plugins/my-plugin/MyPlugin")
-
-return {
-    target = "frame-update",
-    init = function(self, ctx)
-        return MyPlugin()
-    end
-}
-```
-
-### Skeleton of a plugin class
-
-```lua
-require("eawx-std/class")
-
----@class MyPlugin
-MyPlugin = class()
-
-function MyPlugin:new(args)
-    self.args = args
-end
-
-function MyPlugin:update()
-
-end
-```
-
-
-### Possible plugin targets
-
-| target               | update time   | needs update method | update arguments |
-| -------------------- | ------------- | ------------------- | ---------------- |
-| passive              | never         | no                  | -                |
-| frame-update         | OnUpdate      | yes                 | -                |
-| frame-planet-update  | OnUpdate      | yes                 | planet           |
-| weekly-update        | once per week | yes                 | -                |
-| weekly-planet-update | once per week | yes                 | planet           |
-
-**Note:** Targets containing `planet` run inside a loop over all planets in the GC. Every planet will be passed individually to the `update()` function.

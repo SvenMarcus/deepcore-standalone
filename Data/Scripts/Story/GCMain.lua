@@ -1,3 +1,21 @@
+--*****************************************************************************
+--*    _______ __
+--*   |_     _|  |--.----.---.-.--.--.--.-----.-----.
+--*     |   | |     |   _|  _  |  |  |  |     |__ --|
+--*     |___| |__|__|__| |___._|________|__|__|_____|
+--*    ______
+--*   |   __ \.-----.--.--.-----.-----.-----.-----.
+--*   |      <|  -__|  |  |  -__|     |  _  |  -__|
+--*   |___|__||_____|\___/|_____|__|__|___  |_____|
+--*                                   |_____|
+--*
+--*   @Author:              [EaWX]Pox
+--*   @Date:                2020-12-23
+--*   @Project:             Empire at War Expanded
+--*   @Filename:            GCMain.lua
+--*   @License:             MIT
+--*****************************************************************************
+
 require("PGDebug")
 require("PGStateMachine")
 require("PGStoryMode")
@@ -14,19 +32,11 @@ end
 
 function Begin_GC(message)
     if message == OnEnter then
-        -- We need a list of playable factions for the GalacticConquest
-        -- object instantiated in EawXMod
-        local playable_factions = {
-            "EMPIRE",
-            "REBEL",
-            "UNDERWORLD"
-        }
-
         -- The context table allows you to pass variables to
         -- the init() function of your plugins
         local context = {}
 
-        ActiveMod = EawXMod(playable_factions, context)
+        ActiveMod = EawXMod(context)
     elseif message == OnUpdate then
         ActiveMod:update()
     end

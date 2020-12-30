@@ -1,23 +1,20 @@
---**************************************************************************************************
---*    _______ __                                                                                  *
---*   |_     _|  |--.----.---.-.--.--.--.-----.-----.                                              *
---*     |   | |     |   _|  _  |  |  |  |     |__ --|                                              *
---*     |___| |__|__|__| |___._|________|__|__|_____|                                              *
---*    ______                                                                                      *
---*   |   __ \.-----.--.--.-----.-----.-----.-----.                                                *
---*   |      <|  -__|  |  |  -__|     |  _  |  -__|                                                *
---*   |___|__||_____|\___/|_____|__|__|___  |_____|                                                *
---*                                   |_____|                                                      *
---*                                                                                                *
---*                                                                                                *
---*       File:              EawXMod.lua                                                           *
---*       File Created:      Sunday, 23rd February 2020 06:32                                      *
---*       Author:            [TR] Pox                                                              *
---*       Last Modified:     Monday, 24th February 2020 03:13                                      *
---*       Modified By:       [TR] Pox                                                              *
---*       Copyright:         Thrawns Revenge Development Team                                      *
---*       License:           This code may not be used without the author's explicit permission    *
---**************************************************************************************************
+--*****************************************************************************
+--*    _______ __
+--*   |_     _|  |--.----.---.-.--.--.--.-----.-----.
+--*     |   | |     |   _|  _  |  |  |  |     |__ --|
+--*     |___| |__|__|__| |___._|________|__|__|_____|
+--*    ______
+--*   |   __ \.-----.--.--.-----.-----.-----.-----.
+--*   |      <|  -__|  |  |  -__|     |  _  |  -__|
+--*   |___|__||_____|\___/|_____|__|__|___  |_____|
+--*                                   |_____|
+--*
+--*   @Author:              [EaWX]Pox
+--*   @Date:                2020-12-23
+--*   @Project:             Empire at War Expanded
+--*   @Filename:            EawXMod.lua
+--*   @License:             MIT
+--*****************************************************************************
 
 require("eawx-std/class")
 require("eawx-crossplot/crossplot")
@@ -28,9 +25,9 @@ require("eawx-std/PluginLoader")
 ---@class EawXMod
 EawXMod = class()
 
-function EawXMod:new(playable_factions, context, plugin_list)
+function EawXMod:new(context, plugin_list)
     crossplot:galactic()
-    self.galactic_conquest = GalacticConquest(playable_factions)
+    self.galactic_conquest = GalacticConquest()
 
     if not context then
         context = {}
@@ -41,53 +38,36 @@ function EawXMod:new(playable_factions, context, plugin_list)
     local plugin_loader = PluginLoader(context, "eawx-plugins")
     plugin_loader:load(plugin_list)
 
-    self.frame_update_plugins = plugin_loader:get_plugins_for_target("frame-update") or {}
-    self.frame_planet_update_plugins = plugin_loader:get_plugins_for_target("frame-planet-update") or {}
-
-    self.weekly_update_plugins = plugin_loader:get_plugins_for_target("weekly-update") or {}
-    self.weekly_planet_update_plugins = plugin_loader:get_plugins_for_target("weekly-planet-update") or {}
-
-    self.passive_plugins = plugin_loader:get_plugins_for_target("passive") or {}
-
-    self.last_week_update = 0
-    self.week_duration = 45
+    self.plugin_containers = plugin_loader:get_plugin_containers()
+    self.planet_plugin_containers = plugin_loader:get_planet_dependent_plugin_containers()
 end
 
 function EawXMod:update()
     crossplot:update()
-    local week_passed = self:week_passed()
-    for _, plugin in pairs(self.frame_update_plugins) do
-        plugin:update()
-    end
 
-    if week_passed then
-        for _, plugin in pairs(self.weekly_update_plugins) do
-            plugin:update()
+    for _, plugin_container in ipairs(self.plugin_containers) do
+        if plugin_container.target() then
+            plugin_container.plugin:update()
         end
     end
 
+    local cache = {}
     for _, planet in pairs(self.galactic_conquest.Planets) do
-        for _, plugin in pairs(self.frame_planet_update_plugins) do
-            plugin:update(planet)
-        end
-
-        if week_passed then
-            for _, plugin in pairs(self.weekly_planet_update_plugins) do
-                plugin:update(planet)
+        for _, plugin_container in ipairs(self.planet_plugin_containers) do
+            if self:allowed_to_update(plugin_container, cache) then
+                plugin_container.plugin:update(planet)
             end
         end
     end
 end
 
 ---@private
-function EawXMod:week_passed()
-    local week_passed = false
-    if self.last_week_update == 0 or GetCurrentTime() - self.last_week_update >= self.week_duration then
-        week_passed = true
-        self.last_week_update = GetCurrentTime()
+function EawXMod:allowed_to_update(plugin_container, cache)
+    if cache[plugin_container.target] == nil then
+        cache[plugin_container.target] = plugin_container.target()
     end
 
-    return week_passed
+    return cache[plugin_container.target]
 end
 
 return EawXMod

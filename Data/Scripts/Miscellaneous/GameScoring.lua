@@ -536,12 +536,12 @@ end
 -- @since 3/15/2005 4:10:19 PM -- BMH
 --
 function Galactic_Production_End_Event(planet, object)
-    crossplot:publish("PRODUCTION_FINISHED", planet.Get_Type().Get_Name(), object.Get_Type().Get_Name())
     if object.Get_Type == nil then
         -- object must be a GameObjectTypeWrapper not a GameObjectWrapper if it doesn't
         -- have a Get_Type function.
         Update_Build_Stats_Table(GalacticBuildStatsTable, planet, object, planet.Get_Owner(), object.Get_Build_Cost())
     else
+        crossplot:publish("PRODUCTION_FINISHED", planet.Get_Type().Get_Name(), object.Get_Type().Get_Name())
         -- object points to the GameObjectWrapper that was just created.
         Update_Build_Stats_Table(
             GalacticBuildStatsTable,
@@ -607,7 +607,12 @@ end
 -- @since 6/20/2005 8:37:53 PM -- BMH
 --
 function Galactic_Planet_Faction_Change(planet, newplayer, oldplayer)
-    crossplot:publish("PLANET_OWNER_CHANGED", planet.Get_Type().Get_Name())
+    crossplot:publish(
+        "PLANET_OWNER_CHANGED",
+        planet.Get_Type().Get_Name(),
+        newplayer.Get_Faction_Name(),
+        oldplayer.Get_Faction_Name()
+    )
     -- Update the player table.
     Update_Player_Table(newplayer)
     Update_Player_Table(oldplayer)

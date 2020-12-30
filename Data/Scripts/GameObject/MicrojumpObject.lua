@@ -10,15 +10,33 @@
 --*                                   |_____|
 --*
 --*   @Author:              [EaWX]Pox
---*   @Date:                2020-12-23
+--*   @Date:                2020-12-30
 --*   @Project:             Empire at War Expanded
---*   @Filename:            InstalledPlugins.lua
+--*   @Filename:            MicrojumpObject.lua
 --*   @License:             MIT
 --*****************************************************************************
 
-return {
-    "production-listener",
-    "weekly-game-message-service",
-    "weekly-kuat-flip",
-    "ui-listener"
-}
+require("PGCommands")
+require("PGStateMachine")
+
+function Definitions()
+    DebugMessage("%s -- In Definitions", tostring(Script))
+
+    Define_State("State_Init", State_Init)
+end
+
+function State_Init(message)
+    if message == OnEnter then
+        if Get_Game_Mode() ~= "Space" then
+            ScriptExit()
+        end
+
+        local context = {}
+        local plugins = { "microjump" }
+
+        EawXGameObject = require("eawx-std/EawXGameObject")
+        EawXObj = EawXGameObject(context, plugins)
+    elseif message == OnUpdate then
+        EawXObj:update()
+    end
+end
