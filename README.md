@@ -5,9 +5,9 @@
   - [Basic set up](#basic-set-up)
     - [Using the framework in Galactic Conquest](#using-the-framework-in-galactic-conquest)
     - [Using the framework with a game object script](#using-the-framework-with-a-game-object-script)
-    - [Defining a Galactic Conquest plugin](#defining-a-galactic-conquest-plugin)
+    - [Creating a plugin definition](#creating-a-plugin-definition)
+    - [Implementing a plugin object](#implementing-a-plugin-object)
     - [Using the events from the GalacticConquest object](#using-the-events-from-the-galacticconquest-object)
-    - [Defining a game object plugin](#defining-a-game-object-plugin)
     - [Defining a plugin with dependencies](#defining-a-plugin-with-dependencies)
   - [Using eawx-crossplot for communication between story plots](#using-eawx-crossplot-for-communication-between-story-plots)
   - [The GalacticConquest class](#the-galacticconquest-class)
@@ -108,15 +108,14 @@ end
 </details>
 
 
-### Defining a Galactic Conquest plugin
+### Creating a plugin definition
 
-All plugins must be specified in folders inside the `eawx-plugins` directory. They must include a file called `init.lua` that returns the instantiated plugin object.
+Plugins for galactic conquest must be placed inside the `eawx-plugins` directory. Plugins for game objects are placed in the `eawx-plugins-gameobject-space` and `eawx-plugins-gameobject-land` directories. The `PluginLoader` will automatically determine the required directory based on the current game mode. 
 
-The `init()` function must at least be able to receive the `self` argument. The `ctx` argument refers to the `context` table that was defined in the main GC Lua file. It will be passed to the `init()`  function when the plugin loader initialises the plugin. `galactic_conquest` is an object provided by the EawX framework that contains a list of planets in the GC, the human player object and several observable events. It will be added to the `context` table automatically. 
+A plugin consists of a folder containing at least a file called `init.lua`. It is used to configure and create the plugin object. The `init.lua` must return a table with both `target` and `init` keys. The `target` specifies *when* or *how often* a plugin gets updated. The targets are defined in `plugintargets.lua` and can be extended with new targets if needed. `init` refers to a function that must at least be able to receive the `self` argument. Its second argument is the plugin `context` (`ctx`) table that was defined in the main GC or game object Lua function (see [Using the framework in Galactic Conquest](#using-the-framework-in-galactic-conquest) and [Using the framework with a game object script](#using-the-framework-with-a-game-object-script)). If you're defining a galactic conquest plugin the `ctx` table contains the `GalacticConquest` object in `ctx.galactic_conquest`. See [The GalacticConquest class](#the-galacticconquest-class) for more information on what functions it provides. The `init` function must return a plugin object with an `update` function (unless the target is `never()`).
+Galactic conquest plugins can set the `requires_planets` to `true`. In that case the plugin's update function will be called with one planet at a time.
 
-The `target` entry in the plugin definition specifies at when the plugin will be updated. In the following example the `target` is `never()`, meaning the plugin does not expect to be updated explicitly.
-
-After defining a plugin make sure to add them to the list in `InstalledPlugins.lua`.
+The code snippet below demonstrates the structure of the `init.lua` file.
 
 <details>
   <summary>Click to see init.lua of production-listener</summary>
@@ -126,8 +125,8 @@ require("eawx-std/plugintargets")
 require("eawx-plugins/production-listener/ProductionFinishedListener")
 
 return {
-    -- The never() target means we don't expect to be updated
-    target = PluginTarget.never(),
+    target = PluginTargets.never(),
+    requires_planets = false,
     init = function(self, ctx)
         ---@type GalacticConquest
         local galactic_conquest = ctx.galactic_conquest
@@ -137,6 +136,42 @@ return {
 }
 ```
 </details>
+
+The framework comes with the following plugin targets out of the box:
+
+| Name       | Parameters           | Description                                                                   |
+| ---------- | -------------------- | ----------------------------------------------------------------------------- |
+| always     | -                    | Allows a plugin to be updated every frame                                     |
+| never      | -                    | Never allows updates. Use this if you want to react to observable events only |
+| interval   | number               | Updates the plugin every X seconds                                            |
+| story_flag | string, PlayerObject | Uses `Check_Story_Flag` to determine if an update is allowed                  |
+
+
+### Implementing a plugin object
+
+As specified in the previous section most plugin objects require an `update` function. Plugin objects can be created using a simple table inside the plugin definition:
+
+<details>
+  <summary>Click to see a simple table with an update function</summary>
+
+```lua
+require("eawx-std/plugintargets")
+
+return {
+    target = PluginTargets.interval(45)
+    init = function(self, ctx)
+        return {
+            update = function(self)
+                -- do something
+            end
+        }
+    end
+}
+```
+</details>
+
+They can also be objects located in another file like the `ProductionFinishedListener` from the previous section. The next section about events will show its code in more detail. To enhance readability and code structure I recommend placing plugin objects in separate files.
+
 
 ### Using the events from the GalacticConquest object
 
@@ -176,12 +211,6 @@ function ProductionFinishedListener:on_production_finished(planet, object_type_n
 end
 ```
 </details>
-
-
-### Defining a game object plugin
-
-Defining a game object plugin is essentially the same as defining a galactic plugin. However, since `EawXGameObject` is only intended to be used from tactical mode
-
 
 ### Defining a plugin with dependencies
 
