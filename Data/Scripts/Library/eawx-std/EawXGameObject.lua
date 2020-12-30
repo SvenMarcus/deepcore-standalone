@@ -28,7 +28,7 @@ function EawXGameObject:new(context, plugin_list)
     context = context or {}
     local game_mode_name = string.lower(tostring(Get_Game_Mode()))
     DebugMessage("EawXGameObject -- before loading plugins. game mode: %s", tostring(Get_Game_Mode()))
-    local plugin_loader = PluginLoader(self.context, "eawx-plugins-" .. game_mode_name)
+    local plugin_loader = PluginLoader(self.context, "eawx-plugins-gameobject-" .. game_mode_name)
 
     plugin_loader:load(plugin_list)
     DebugMessage("EawXGameObject -- plugins loaded successfully")

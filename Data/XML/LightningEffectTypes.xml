@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LightningEffects>
+
+	<LightningEffect name="Hyperspace_Lightning_Effect">
+		
+		<Texture_Name>lightning_default.tga</Texture_Name>
+		<Texture_Repeat>0.0</Texture_Repeat>
+       		<Texture_Scroll>0.0</Texture_Scroll>
+		
+		<Width_Max>2</Width_Max>
+		<Width_Min>2</Width_Min>
+		<Displace>0, 0, 0</Displace>
+		<Detail>15</Detail>	
+		<Color_Start>0,200,255,255</Color_Start>
+		<Color_End>0,0,0,0</Color_End>
+		<Fadeout_Time_Max>0.6</Fadeout_Time_Max>
+		<Fadeout_Time_Min>0.15</Fadeout_Time_Min>
+		
+		<Number_Bolts>30</Number_Bolts>
+		<Bolt_Creation_Interval_Min>0.0</Bolt_Creation_Interval_Min> 
+		<Bolt_Creation_Interval_Max>0.1</Bolt_Creation_Interval_Max> 
+		
+	</LightningEffect>
+
+
+	<LightningEffect name="Default">
+		
+		<Texture_Name>lightning_default.tga</Texture_Name>
+		<Texture_Repeat>0.0</Texture_Repeat>
+		<Texture_Scroll>0.0</Texture_Scroll>
+		
+		<Width_Max>4</Width_Max>
+		<Width_Min>7</Width_Min>
+		<Displace>0.6, 0.6, 0.0</Displace>
+		<Detail>15</Detail>	
+		<Color_Start>100,100,255,255</Color_Start>
+		<Color_End>0,0,0,0</Color_End>
+		<Fadeout_Time_Max>3.0</Fadeout_Time_Max>
+		<Fadeout_Time_Min>0.3</Fadeout_Time_Min>
+		
+		<Number_Bolts>20</Number_Bolts>
+		<Bolt_Creation_Interval_Min>0.001</Bolt_Creation_Interval_Min> 
+		<Bolt_Creation_Interval_Max>0.2</Bolt_Creation_Interval_Max> 
+		
+	</LightningEffect>
+
+    <LightningEffect name="Piet_Energy_Weapon">
+		
+		<Texture_Name>lightning_test.tga</Texture_Name>
+		<Texture_Repeat>0.0</Texture_Repeat>
+		<Texture_Scroll>0.0</Texture_Scroll>
+		
+		<Width_Max>10</Width_Max>
+		<Width_Min>8</Width_Min>
+		<Displace>0.05, 0.05, 0.05</Displace>
+		<Detail>10</Detail>	
+		<Color_Start>255, 75,0,0</Color_Start>
+		<Color_End>255,255,0,0</Color_End>
+		<Fadeout_Time_Max>0.1</Fadeout_Time_Max>
+		<Fadeout_Time_Min>0.0</Fadeout_Time_Min>
+		
+		<Number_Bolts>10</Number_Bolts>
+		<Bolt_Creation_Interval_Min>0.0</Bolt_Creation_Interval_Min> 
+		<Bolt_Creation_Interval_Max>0.1</Bolt_Creation_Interval_Max> 
+        <Update_All>true</Update_All>
+		
+	</LightningEffect>
+
+    <LightningEffect name="Corruption_Line">
+
+        <Texture_Name>lightning_default.tga</Texture_Name>
+        <Texture_Repeat>0.0</Texture_Repeat>
+        <Texture_Scroll>0.0</Texture_Scroll>
+
+        <Width_Max>6</Width_Max>
+        <Width_Min>6</Width_Min>
+        <Displace>0.1, 0.1, 0.1</Displace>
+        <Detail>0.1</Detail>	
+        <Color_Start>98,93,10,0</Color_Start>
+        <Color_End>98,93,10,0</Color_End>
+        <Fadeout_Time_Max>30</Fadeout_Time_Max>
+        <Fadeout_Time_Min>30</Fadeout_Time_Min>
+        <Update_All>false</Update_All>
+        <Cycles_Per_Distance>-0.01</Cycles_Per_Distance>
+        <Rotations_Per_Second>0.1</Rotations_Per_Second>
+        <Radius>3</Radius>
+
+        <Number_Bolts>1</Number_Bolts>
+        <Bolt_Creation_Interval_Min>0.0</Bolt_Creation_Interval_Min> 
+        <Bolt_Creation_Interval_Max>0.5</Bolt_Creation_Interval_Max> 
+        <Replace_Faded> true </Replace_Faded>
+
+    </LightningEffect>
+
+    <LightningEffect name="Tractor_Beam">
+
+        <Texture_Name>lightning_default.tga</Texture_Name>
+        <Texture_Repeat>0.0</Texture_Repeat>
+        <Texture_Scroll>0.0</Texture_Scroll>
+
+        <Width_Max>1</Width_Max>
+        <Width_Min>1</Width_Min>
+        <Displace>0.01, 0.01, 0.01</Displace>
+        <Detail>0.1</Detail>	
+        <Color_Start>255, 255,0,0</Color_Start>
+        <Color_End>255,255,0,0</Color_End>
+        <Fadeout_Time_Max>101</Fadeout_Time_Max>
+        <Fadeout_Time_Min>100</Fadeout_Time_Min>
+        <Update_All>true</Update_All>
+        <Cycles_Per_Distance>-0.01</Cycles_Per_Distance>
+        <Rotations_Per_Second>3</Rotations_Per_Second>
+        <Radius>5</Radius>
+
+        <Number_Bolts>3</Number_Bolts>
+        <Bolt_Creation_Interval_Min>0.0</Bolt_Creation_Interval_Min> 
+        <Bolt_Creation_Interval_Max>0.1</Bolt_Creation_Interval_Max> 
+
+    </LightningEffect>
+
+    <LightningEffect name="Force_Lightning">
+		
+		<Texture_Name>lightning_default.tga</Texture_Name>
+		<Texture_Repeat>0.0</Texture_Repeat>
+		<Texture_Scroll>0.0</Texture_Scroll>
+		
+		<Width_Max>2</Width_Max>
+		<Width_Min>.3</Width_Min>
+		<Displace>0.3, 0.3, 0.0</Displace>
+		<Detail>.5</Detail>	
+		<Color_Start>100,100,255,255</Color_Start>
+		<Color_End>0,0,0,0</Color_End>
+		<Fadeout_Time_Max>0.4</Fadeout_Time_Max>
+		<Fadeout_Time_Min>0.15</Fadeout_Time_Min>
+		
+		<Number_Bolts>5</Number_Bolts>
+		<Bolt_Creation_Interval_Min>0.1</Bolt_Creation_Interval_Min> 
+		<Bolt_Creation_Interval_Max>0.5</Bolt_Creation_Interval_Max> 
+		
+	</LightningEffect>
+
+    <LightningEffect name="Electric_Judgement">
+		
+		<Texture_Name>lightning_default.tga</Texture_Name>
+		<Texture_Repeat>0.0</Texture_Repeat>
+		<Texture_Scroll>0.0</Texture_Scroll>
+		
+		<Width_Max>2</Width_Max>
+		<Width_Min>.3</Width_Min>
+		<Displace>0.3, 0.3, 0.0</Displace>
+		<Detail>.5</Detail>	
+		<Color_Start>255,150,0,255</Color_Start>
+		<Color_End>0,0,0,0</Color_End>
+		<Fadeout_Time_Max>0.4</Fadeout_Time_Max>
+		<Fadeout_Time_Min>0.15</Fadeout_Time_Min>
+		
+		<Number_Bolts>5</Number_Bolts>
+		<Bolt_Creation_Interval_Min>0.1</Bolt_Creation_Interval_Min> 
+		<Bolt_Creation_Interval_Max>0.5</Bolt_Creation_Interval_Max> 
+		
+	</LightningEffect>
+
+
+	<LightningEffect name="Repair_Facility_Effect">
+		
+		<Texture_Name>lightning_default.tga</Texture_Name>
+		<Texture_Repeat>0.0</Texture_Repeat>
+		<Texture_Scroll>0.0</Texture_Scroll>
+		
+		<Width_Max>4</Width_Max>
+		<Width_Min>1</Width_Min>
+		<Displace>0.6, 0.6, 0.0</Displace>
+		<Detail>15</Detail>	
+		<Color_Start>100,100,255,255</Color_Start>
+		<Color_End>0,0,0,0</Color_End>
+		<Fadeout_Time_Max>0.6</Fadeout_Time_Max>
+		<Fadeout_Time_Min>0.15</Fadeout_Time_Min>
+		
+		<Number_Bolts>23</Number_Bolts>
+		<Bolt_Creation_Interval_Min>0.0005</Bolt_Creation_Interval_Min> 
+		<Bolt_Creation_Interval_Max>0.1</Bolt_Creation_Interval_Max> 
+		
+	</LightningEffect>
+
+	<!-- Used by R2D2 to hack turrets -->
+	<LightningEffect name="Hack_Electicity_Zaps">
+		
+		<!-- STUB PLACEHOLDER data for Gary -->
+
+		<Texture_Name>lightning_default.tga</Texture_Name>
+		<Texture_Repeat>0.0</Texture_Repeat>
+		<Texture_Scroll>0.0</Texture_Scroll>
+		
+		<Width_Max>2</Width_Max>
+		<Width_Min>2</Width_Min>
+		<Displace>0, 0, 0</Displace>
+		<Detail>15</Detail>	
+		<Color_Start>0,200,255,255</Color_Start>
+		<Color_End>0,0,0,0</Color_End>
+		<Fadeout_Time_Max>0.6</Fadeout_Time_Max>
+		<Fadeout_Time_Min>0.15</Fadeout_Time_Min>
+		
+		<Number_Bolts>23</Number_Bolts>
+		<Bolt_Creation_Interval_Min>0.0005</Bolt_Creation_Interval_Min> 
+		<Bolt_Creation_Interval_Max>0.1</Bolt_Creation_Interval_Max> 
+		
+	</LightningEffect>
+
+	<!-- Used by R2D2 to repair vehicles -->
+	<LightningEffect name="Repair_Electicity_Zaps">
+		
+		<!-- STUB PLACEHOLDER data for Gary -->
+
+		<Texture_Name>lightning_default.tga</Texture_Name>
+		<Texture_Repeat>0.0</Texture_Repeat>
+		<Texture_Scroll>0.0</Texture_Scroll>
+		
+		<Width_Max>2</Width_Max>
+		<Width_Min>2</Width_Min>
+		<Displace>0, 0, 0</Displace>
+		<Detail>15</Detail>	
+		<Color_Start>0,255,0,255</Color_Start>
+		<Color_End>0,0,0,0</Color_End>
+		<Fadeout_Time_Max>0.6</Fadeout_Time_Max>
+		<Fadeout_Time_Min>0.15</Fadeout_Time_Min>
+		
+		<Number_Bolts>23</Number_Bolts>
+		<Bolt_Creation_Interval_Min>0.0005</Bolt_Creation_Interval_Min> 
+		<Bolt_Creation_Interval_Max>0.1</Bolt_Creation_Interval_Max> 
+		
+	</LightningEffect>
+
+    <LightningEffect name="Leech_Shields">
+
+        <Texture_Name>lightning_default.tga</Texture_Name>
+        <Texture_Repeat>0.0</Texture_Repeat>
+        <Texture_Scroll>0.0</Texture_Scroll>
+
+        <Width_Max>3</Width_Max>
+        <Width_Min>.3</Width_Min>
+        <Displace>0.06, 0.06, 0.06</Displace>
+        <Detail>2</Detail>	
+        <Color_Start>200, 0,155,150</Color_Start>
+        <Color_End>200,0,155,150</Color_End>
+        <Fadeout_Time_Max>101</Fadeout_Time_Max>
+        <Fadeout_Time_Min>100</Fadeout_Time_Min>
+        <Cycles_Per_Distance>-0.01</Cycles_Per_Distance>
+        <Rotations_Per_Second>3</Rotations_Per_Second>
+        <Radius>3</Radius>
+
+
+        <Number_Bolts>4</Number_Bolts>
+        <Bolt_Creation_Interval_Min>0.0</Bolt_Creation_Interval_Min> 
+        <Bolt_Creation_Interval_Max>0.1</Bolt_Creation_Interval_Max> 
+        <Update_All>true</Update_All>
+
+    </LightningEffect>
+
+
+    <LightningEffect name="Drain_Life_Effect">
+
+        <Texture_Name>lightning_default.tga</Texture_Name>
+        <Texture_Repeat>0.0</Texture_Repeat>
+        <Texture_Scroll>0.0</Texture_Scroll>
+
+        <Width_Max>1.0</Width_Max>
+        <Width_Min>.4</Width_Min>
+        <Displace>0.3, 0.3, 0.0</Displace>
+        <Detail>3</Detail>	
+        <Color_Start>0,250,250,255</Color_Start>
+        <Color_End>0,250,250,255</Color_End>
+        <Fadeout_Time_Max>20</Fadeout_Time_Max>
+        <Fadeout_Time_Min>20</Fadeout_Time_Min>
+        <Cycles_Per_Distance>-0.04</Cycles_Per_Distance>
+        <Rotations_Per_Second>2</Rotations_Per_Second>
+
+        <Number_Bolts>2</Number_Bolts>
+
+    </LightningEffect>
+
+    <LightningEffect name="Turret_Drain_Life_Effect">
+
+        <Texture_Name>lightning_default.tga</Texture_Name>
+        <Texture_Repeat>0.0</Texture_Repeat>
+        <Texture_Scroll>0.0</Texture_Scroll>
+
+        <Width_Max>2</Width_Max>
+        <Width_Min>.2</Width_Min>
+        <Displace>0.06, 0.06, 0.06</Displace>
+        <Detail>2</Detail>	
+        <Color_Start>100,100,255,255</Color_Start>
+        <Color_End>200,0,155,150</Color_End>
+        <Fadeout_Time_Max>301</Fadeout_Time_Max>
+        <Fadeout_Time_Min>300</Fadeout_Time_Min>
+        <Cycles_Per_Distance>-0.01</Cycles_Per_Distance>
+        <Rotations_Per_Second>3</Rotations_Per_Second>
+        <Radius>3</Radius>
+
+
+        <Number_Bolts>6</Number_Bolts>
+        <Bolt_Creation_Interval_Min>0.0</Bolt_Creation_Interval_Min> 
+        <Bolt_Creation_Interval_Max>0.1</Bolt_Creation_Interval_Max> 
+        <Update_All>true</Update_All>
+
+    </LightningEffect>
+
+    <LightningEffect name="Lancet_Drain_Life_Effect">
+
+        <Texture_Name>lightning_default.tga</Texture_Name>
+        <Texture_Repeat>0.0</Texture_Repeat>
+        <Texture_Scroll>0.0</Texture_Scroll>
+
+        <Width_Max>2</Width_Max>
+        <Width_Min>.2</Width_Min>
+        <Displace>0.06, 0.06, 0.06</Displace>
+        <Detail>2</Detail>	
+        <Color_Start>99,202,0,82</Color_Start>
+        <!--<Color_Start>255,255,0,150</Color_Start>-->
+        <Color_End>255,155,0,150</Color_End>
+        <Fadeout_Time_Max>101</Fadeout_Time_Max>
+        <Fadeout_Time_Min>100</Fadeout_Time_Min>
+        <Cycles_Per_Distance>-0.01</Cycles_Per_Distance>
+        <Rotations_Per_Second>6</Rotations_Per_Second>
+        <Radius>3</Radius>
+
+
+        <Number_Bolts>5</Number_Bolts>
+        <Bolt_Creation_Interval_Min>0.0</Bolt_Creation_Interval_Min> 
+        <Bolt_Creation_Interval_Max>0.1</Bolt_Creation_Interval_Max> 
+        <Update_All>true</Update_All>
+
+    </LightningEffect>
+
+
+
+	<!-- Used by the mouse droid in opening cine to hack node -->
+	<LightningEffect name="Kessel_Mouse_Droid_Hack">
+		
+        	<Texture_Name>lightning_default.tga</Texture_Name>
+        	<Texture_Repeat>1</Texture_Repeat>
+        	<Texture_Scroll>50</Texture_Scroll>
+
+        	<Width_Max>.3</Width_Max>
+        	<Width_Min>.2</Width_Min>
+        	<Displace>0.06, 0.06, 0.06</Displace>
+        	<Detail>2</Detail>	
+        	<Color_Start>180,50,0,255</Color_Start>
+        	<Color_End>180,255,0,150</Color_End>
+        	<Fadeout_Time_Max>11</Fadeout_Time_Max>
+        	<Fadeout_Time_Min>10</Fadeout_Time_Min>
+        	<Cycles_Per_Distance>10</Cycles_Per_Distance>
+        	<Rotations_Per_Second>15</Rotations_Per_Second>
+        	<Radius>1</Radius>
+
+
+        	<Number_Bolts>3</Number_Bolts>
+        	<Bolt_Creation_Interval_Min>.5</Bolt_Creation_Interval_Min> 
+        	<Bolt_Creation_Interval_Max>0.5</Bolt_Creation_Interval_Max> 
+        	<Update_All>true</Update_All> 
+		
+	</LightningEffect>
+
+</LightningEffects>

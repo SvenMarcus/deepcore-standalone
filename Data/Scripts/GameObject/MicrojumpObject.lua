@@ -10,34 +10,33 @@
 --*                                   |_____|
 --*
 --*   @Author:              [EaWX]Pox
---*   @Date:                2020-12-23
+--*   @Date:                2020-12-30
 --*   @Project:             Empire at War Expanded
---*   @Filename:            GCMain.lua
+--*   @Filename:            MicrojumpObject.lua
 --*   @License:             MIT
 --*****************************************************************************
 
-require("PGDebug")
+require("PGCommands")
 require("PGStateMachine")
-require("PGStoryMode")
-
-require("eawx-std/EawXMod")
 
 function Definitions()
     DebugMessage("%s -- In Definitions", tostring(Script))
 
-    ServiceRate = 0.1
-
-    StoryModeEvents = {Universal_Story_Start = Begin_GC}
+    Define_State("State_Init", State_Init)
 end
 
-function Begin_GC(message)
+function State_Init(message)
     if message == OnEnter then
-        -- The context table allows you to pass variables to
-        -- the init() function of your plugins
-        local context = {}
+        if Get_Game_Mode() ~= "Space" then
+            ScriptExit()
+        end
 
-        ActiveMod = EawXMod(context)
+        local context = {}
+        local plugins = { "microjump" }
+
+        EawXGameObject = require("eawx-std/EawXGameObject")
+        EawXObj = EawXGameObject(context, plugins)
     elseif message == OnUpdate then
-        ActiveMod:update()
+        EawXObj:update()
     end
 end
