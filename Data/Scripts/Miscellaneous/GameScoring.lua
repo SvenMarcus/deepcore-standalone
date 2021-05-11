@@ -1,6 +1,5 @@
 require("pgcommands")
-require("eawx-crossplot/GlobalValueQueue")
-require("eawx-crossplot/crossplot")
+require("eawx/std/EawXGameScoring")
 
 -- Don't pool...
 ScriptPoolCount = 0
@@ -29,7 +28,7 @@ function Base_Definitions()
         Definitions()
     end
 
-    crossplot:master()
+    GameScoringPluginRunner = EawXGameScoring()
 
     Define_Title_Faction_Table()
 end
@@ -56,7 +55,7 @@ function main()
         while true do
             GameService()
             PumpEvents()
-            crossplot:update()
+            GameScoringPluginRunner:update()
         end
     end
 

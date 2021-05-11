@@ -10,33 +10,26 @@
 --*                                   |_____|
 --*
 --*   @Author:              [EaWX]Pox
---*   @Date:                2020-12-30
+--*   @Date:                2020-12-29
 --*   @Project:             Empire at War Expanded
---*   @Filename:            MicrojumpObject.lua
+--*   @Filename:            init.lua
 --*   @License:             MIT
 --*****************************************************************************
 
-require("PGCommands")
-require("PGStateMachine")
+require("eawx/std/plugintargets")
 
-function Definitions()
-    DebugMessage("%s -- In Definitions", tostring(Script))
+return {
+    target = PluginTargets.story_flag("SELECT_CREDIT_FILTER"),
 
-    Define_State("State_Init", State_Init)
-end
+    init = function(self, ctx)
+        local plot = Get_Story_Plot("STORY_SANDBOX_27_UNDERWORLD.XML")
+        local event = plot.Get_Event("Click_Filter")
+        event.Set_Reward_Parameter(1, Find_Player("local").Get_Faction_Name())
 
-function State_Init(message)
-    if message == OnEnter then
-        if Get_Game_Mode() ~= "Space" then
-            ScriptExit()
-        end
-
-        local context = {}
-        local plugins = { "microjump" }
-
-        EawXGameObject = require("eawx/std/EawXGameObject")
-        EawXObj = EawXGameObject(context, plugins)
-    elseif message == OnUpdate then
-        EawXObj:update()
+        return {
+            update = function(self)
+                Game_Message("TEXT_TOOLTIP_CREDIT_FILTER")
+            end
+        }
     end
-end
+}

@@ -10,33 +10,41 @@
 --*                                   |_____|
 --*
 --*   @Author:              [EaWX]Pox
---*   @Date:                2020-12-30
+--*   @Date:                2020-12-23
 --*   @Project:             Empire at War Expanded
---*   @Filename:            MicrojumpObject.lua
+--*   @Filename:            class.lua
 --*   @License:             MIT
 --*****************************************************************************
 
-require("PGCommands")
-require("PGStateMachine")
+---@alias Class table<string, any>
 
-function Definitions()
-    DebugMessage("%s -- In Definitions", tostring(Script))
+---Creates a new class
+---@return Class
+function class(extends)
+    local mt = {
+        __call = function(class, ...)
+            local obj = setmetatable({}, {__index = class})
 
-    Define_State("State_Init", State_Init)
-end
+            if class.__extends and class.__extends.new then
+                class.__extends.new(obj, unpack(arg))
+            end
 
-function State_Init(message)
-    if message == OnEnter then
-        if Get_Game_Mode() ~= "Space" then
-            ScriptExit()
+            if class.new then
+                obj:new(unpack(arg))
+            end
+
+            return obj
         end
+    }
 
-        local context = {}
-        local plugins = { "microjump" }
-
-        EawXGameObject = require("eawx/std/EawXGameObject")
-        EawXObj = EawXGameObject(context, plugins)
-    elseif message == OnUpdate then
-        EawXObj:update()
+    if extends then
+        mt.__index = extends
     end
+
+    return setmetatable(
+        {
+            __extends = extends
+        },
+        mt
+    )
 end

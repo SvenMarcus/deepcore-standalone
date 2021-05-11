@@ -12,31 +12,16 @@
 --*   @Author:              [EaWX]Pox
 --*   @Date:                2020-12-30
 --*   @Project:             Empire at War Expanded
---*   @Filename:            MicrojumpObject.lua
+--*   @Filename:            init.lua
 --*   @License:             MIT
 --*****************************************************************************
 
-require("PGCommands")
-require("PGStateMachine")
+require("eawx/std/plugintargets")
+require("eawx-plugins/gameobject/space/microjump/Microjump")
 
-function Definitions()
-    DebugMessage("%s -- In Definitions", tostring(Script))
-
-    Define_State("State_Init", State_Init)
-end
-
-function State_Init(message)
-    if message == OnEnter then
-        if Get_Game_Mode() ~= "Space" then
-            ScriptExit()
-        end
-
-        local context = {}
-        local plugins = { "microjump" }
-
-        EawXGameObject = require("eawx/std/EawXGameObject")
-        EawXObj = EawXGameObject(context, plugins)
-    elseif message == OnUpdate then
-        EawXObj:update()
+return {
+    target = PluginTargets.always(),
+    init = function(self, ctx)
+        return Microjump()
     end
-end
+}

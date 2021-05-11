@@ -10,33 +10,22 @@
 --*                                   |_____|
 --*
 --*   @Author:              [EaWX]Pox
---*   @Date:                2020-12-30
+--*   @Date:                2020-12-23
 --*   @Project:             Empire at War Expanded
---*   @Filename:            MicrojumpObject.lua
+--*   @Filename:            init.lua
 --*   @License:             MIT
 --*****************************************************************************
 
-require("PGCommands")
-require("PGStateMachine")
+require("eawx/std/plugintargets")
+require("eawx-plugins/galactic/production-listener/ProductionFinishedListener")
 
-function Definitions()
-    DebugMessage("%s -- In Definitions", tostring(Script))
+return {
+    -- The "passive" target means we don't expect to be updated
+    target = PluginTargets.never(),
+    init = function(self, ctx)
+        ---@type GalacticConquest
+        local galactic_conquest = ctx.galactic_conquest
 
-    Define_State("State_Init", State_Init)
-end
-
-function State_Init(message)
-    if message == OnEnter then
-        if Get_Game_Mode() ~= "Space" then
-            ScriptExit()
-        end
-
-        local context = {}
-        local plugins = { "microjump" }
-
-        EawXGameObject = require("eawx/std/EawXGameObject")
-        EawXObj = EawXGameObject(context, plugins)
-    elseif message == OnUpdate then
-        EawXObj:update()
+        return ProductionFinishedListener(galactic_conquest)
     end
-end
+}
