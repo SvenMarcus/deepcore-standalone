@@ -28,7 +28,7 @@ function Base_Definitions()
         Definitions()
     end
 
-    GameScoringPluginRunner = EawXGameScoring()
+    GameScoringPluginRunner = nil
 
     Define_Title_Faction_Table()
 end
@@ -55,7 +55,9 @@ function main()
         while true do
             GameService()
             PumpEvents()
-            GameScoringPluginRunner:update()
+            if GameScoringPluginRunner then
+                GameScoringPluginRunner:update()
+            end
         end
     end
 
@@ -407,10 +409,13 @@ function Game_Mode_Starting_Event(mode_name, map_name)
 
     if StringCompare(mode_name, "Galactic") then
         -- Galactic Campaign
+        if not GameScoringPluginRunner then
+            GameScoringPluginRunner = EawXGameScoring()
+        end
+
         CampaignGame = true
         Reset_Stats()
         GameStartTime = GetCurrentTime.Frame()
-        crossplot:publish("TACTICAL_BATTLE_ENDING", "empty")
     elseif CampaignGame == false then
         -- Skirmish tactical
         Reset_Stats()
@@ -420,6 +425,7 @@ function Game_Mode_Starting_Event(mode_name, map_name)
         -- cleaning out full galactic tables for performance reasons
         Reset_Tactical_Stats()
     end
+    crossplot:publish("GAME_MODE_STARTING", mode_name)
     LastWasCampaignGame = CampaignGame
 end
 
@@ -435,8 +441,9 @@ function Game_Mode_Ending_Event(mode_name)
     LastWasCampaignGame = CampaignGame
     if StringCompare(mode_name, "Galactic") then
         CampaignGame = false
-        crossplot:publish("TACTICAL_BATTLE_BEGINNING", "empty")
     end
+    
+    crossplot:publish("GAME_MODE_ENDING", mode_name)
 end
 
 --

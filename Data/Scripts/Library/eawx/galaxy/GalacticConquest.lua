@@ -23,7 +23,8 @@ require("eawx/galaxy/Planet")
 ---@class GalacticConquest
 GalacticConquest = class()
 
-function GalacticConquest:new()
+---@param planet_factory? fun(planet_name: string): Planet
+function GalacticConquest:new(planet_factory)
     self.HumanPlayer = Find_Player("local")
 
     ---@private
@@ -37,7 +38,8 @@ function GalacticConquest:new()
     ---@type table<string, Planet>
     self.Planets = {}
 
-    self:initialize_galactic_state()
+    planet_factory = planet_factory or function(planet_name) return Planet(planet_name) end
+    self:initialize_galactic_state(planet_factory)
 
     self.Events = {
         PlanetOwnerChanged = PlanetOwnerChangedEvent(self.Planets),
@@ -45,8 +47,7 @@ function GalacticConquest:new()
         GalacticProductionFinished = ProductionFinishedEvent(self.Planets),
         GalacticProductionCanceled = ProductionCanceledEvent(self.Planets),
         GalacticHeroKilled = GalacticHeroKilledEvent(),
-        TacticalBattleStarting = TacticalBattleStartingEvent(),
-        TacticalBattleEnding = TacticalBattleEndingEvent()
+        TacticalBattleEnded = TacticalBattleEndedEvent()
     }
 
     self.Events.PlanetOwnerChanged:attach_listener(self.update_faction_planet_ownerships, self)
@@ -65,12 +66,12 @@ function GalacticConquest:get_number_of_planets_owned_by_faction(faction)
 end
 
 ---@private
-function GalacticConquest:initialize_galactic_state()
+function GalacticConquest:initialize_galactic_state(planet_factory)
     local all_planets = FindPlanet.Get_All_Planets()
 
     for _, planet in ipairs(all_planets) do
         local planet_name = planet.Get_Type().Get_Name()
-        local planet_object = Planet(planet_name, self.HumanPlayer)
+        local planet_object = planet_factory(planet_name, self.HumanPlayer)
         local owner_name = planet_object:get_owner().Get_Faction_Name()
         self.Planets[planet_name] = planet_object
         self:add_planet_to_faction_table(planet_object)

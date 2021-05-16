@@ -80,28 +80,6 @@ function ProductionCanceledEvent:production_canceled(planet_name, object_type_na
     self:notify(planet, object_type_name)
 end
 
----@class TacticalBattleStartingEvent : Observable
-TacticalBattleStartingEvent = class(Observable)
-
-function TacticalBattleStartingEvent:new()
-    crossplot:subscribe("TACTICAL_BATTLE_BEGINNING", self.tactical_battle_starting, self)
-end
-
-function TacticalBattleStartingEvent:tactical_battle_starting()
-    self:notify()
-end
-
----@class TacticalBattleEndingEvent : Observable
-TacticalBattleEndingEvent = class(Observable)
-
-function TacticalBattleEndingEvent:new()
-    crossplot:subscribe("TACTICAL_BATTLE_ENDING", self.tactical_battle_ending, self)
-end
-
-function TacticalBattleEndingEvent:tactical_battle_ending()
-    self:notify()
-end
-
 ---@class GalacticHeroKilledEvent : Observable
 GalacticHeroKilledEvent = class(Observable)
 
@@ -111,4 +89,15 @@ end
 
 function GalacticHeroKilledEvent:galactic_hero_killed(hero_name)
     self:notify(hero_name)
+end
+
+---@class TacticalBattleEndedEvent : Observable
+TacticalBattleEndedEvent = class(Observable)
+
+function TacticalBattleEndedEvent:new()
+    crossplot:subscribe("GAME_MODE_ENDING", self.battle_ended, self)
+end
+
+function TacticalBattleEndedEvent:battle_ended(mode_name)
+    self:notify(mode_name)
 end

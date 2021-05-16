@@ -26,6 +26,8 @@ GlobalValueEventBus = class()
 ---@param name string
 function GlobalValueEventBus:new(name)
     self.name = (name or tostring(Script))
+
+    ---@type GlobalValueQueue
     self.message_queue = GlobalValueQueue()
     self.subscribers = {}
 end
@@ -52,6 +54,40 @@ function GlobalValueEventBus:subscribe(event_name, listener_function, optional_s
 
     self.message_queue:queue_value("busid:master:subscribe", subscription)
     DebugMessage("Registered listener for %s", event_name)
+end
+
+---@param event_name string
+---@param listener_function function
+---@param optional_self table
+function GlobalValueEventBus:unsubscribe(event_name, listener_function, optional_self)
+    if not self.subscribers[event_name] then
+        return
+    end
+
+    local del_index = self:get_subscriber_index(event_name, listener_function, optional_self)
+    if del_index then
+        table.remove(self.subscribers[event_name], del_index)
+    end
+
+    local unsub = serializer:serialize {
+        name = self.name,
+        event = event_name
+    }
+
+    self.message_queue:queue_value("busid:master:unsubscribe", unsub)
+    DebugMessage("Sent unsubscribe message for %s to master", event_name)
+end
+
+---@private
+---@return integer?
+function GlobalValueEventBus:get_subscriber_index(event_name, listener_function, optional_self)
+    for index, sub in ipairs(self.subscribers[event_name]) do
+        if sub.func == listener_function and sub.optional_self == optional_self then
+            return index
+        end
+    end
+
+    return nil
 end
 
 ---@param event_name string
@@ -146,6 +182,55 @@ function MasterGlobalValueEventBus:process_subscriptions()
 end
 
 ---@private
+function MasterGlobalValueEventBus:process_unsubscriptions()
+    local unsubscriber = GlobalValue.Get("busid:master:unsubscribe")
+
+    if not unsubscriber or unsubscriber == "" then
+        return
+    end
+
+    DebugMessage("Trying to unsubscribe in MasterGlobalValueEventBus")
+
+    unsubscriber = serializer:deserialize(unsubscriber)
+
+    if type(unsubscriber) ~= "table" then
+        return
+    end
+
+    if not (unsubscriber.name and unsubscriber.event) then
+        return
+    end
+
+    if not (type(unsubscriber.name) == "string" and type(unsubscriber.event) == "string") then
+        return
+    end
+
+    if not self.subscribers[unsubscriber.event] then
+        DebugMessage("Tried unsubscribing from %s, but no subscribers registered for this event", unsubscriber.event)
+        return
+    end
+
+    local del_index = self:get_subscriber_index(unsubscriber)
+    if del_index then
+        table.remove(self.subscribers[unsubscriber.event], del_index)
+    end
+
+    GlobalValue.Set("busid:master:unsubscribe", "")
+end
+
+---@private
+---@return integer?
+function MasterGlobalValueEventBus:get_subscriber_index(unsubscriber)
+    for index, subscriber_name in ipairs(self.subscribers[unsubscriber.event]) do
+        if unsubscriber.name == subscriber_name then
+            return index
+        end
+    end
+
+    return nil
+end
+
+---@private
 function MasterGlobalValueEventBus:process_publish_messages()
     local publish_data = GlobalValue.Get("busid:master:publish")
 
@@ -217,6 +302,7 @@ end
 
 function MasterGlobalValueEventBus:update()
     self:process_subscriptions()
+    self:process_unsubscriptions()
     self:process_publish_messages()
     self.message_queue:process_global_values()
 end

@@ -17,8 +17,10 @@
 -- *****************************************************************************
 require("eawx/crossplot/GlobalValueEventBus")
 
+---A module that allows publish-subscribe communication between different Lua script environments
 crossplot = {__instance = nil, __important = true}
 
+---Initialize the main crossplot instance. Use only in GameScoring.
 function crossplot:master()
     if self.__instance then
         DebugMessage("crossplot has already been initialized in this plot")
@@ -30,6 +32,7 @@ function crossplot:master()
     self.__instance = MasterGlobalValueEventBus()
 end
 
+---Initialize crossplot for the galactic plot
 function crossplot:galactic()
     if self.__instance then
         DebugMessage("crossplot has already been initialized in this plot")
@@ -40,6 +43,7 @@ function crossplot:galactic()
     self.__instance = GlobalValueEventBus()
 end
 
+---Initialize crossplot on a tactical plot
 function crossplot:tactical()
     if self.__instance then
         DebugMessage("crossplot has already been initialized in this plot")
@@ -50,6 +54,7 @@ function crossplot:tactical()
     self.__instance = GlobalValueEventBus("crossplot:tactical")
 end
 
+---Initialize crossplot for on a script attached to a game object
 function crossplot:game_object()
     if self.__instance then
         DebugMessage("crossplot has already been initialized in this plot")
@@ -61,8 +66,20 @@ function crossplot:game_object()
     self.__instance = GlobalValueEventBus(name)
 end
 
+---Subscribe to a crossplot event
+---@param event_name string
+---@param listener_function function
+---@param optional_self table
 function crossplot:subscribe(event_name, listener_function, optional_self)
     self.__instance:subscribe(event_name, listener_function, optional_self)
+end
+
+---Unsubscribe from a crossplot event
+---@param event_name string
+---@param listener_function function
+---@param optional_self table
+function crossplot:unsubscribe(event_name, listener_function, optional_self)
+    self.__instance:unsubscribe(event_name, listener_function, optional_self)
 end
 
 function crossplot:publish(event_name, ...)

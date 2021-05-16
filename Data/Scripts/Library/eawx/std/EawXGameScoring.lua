@@ -26,6 +26,7 @@ EawXGameScoring = class()
 function EawXGameScoring:new(context, plugin_list)
     crossplot:master()
     self.context = context or {}
+    DebugMessage("EawXGameScoring -- loading plugins")
     local plugin_loader = PluginLoader(self.context, "eawx-plugins/gamescoring")
 
     plugin_loader:load(plugin_list)
