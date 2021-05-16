@@ -36,4 +36,6 @@ function GameMessageService:update()
     for i = 1, objects_produced do
         Game_Message("TEXT_FACTION_EMPIRE")
     end
+
+    crossplot:publish("MESSAGE", "Hi from weekly message service")
 end
