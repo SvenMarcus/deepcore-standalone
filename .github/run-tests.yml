@@ -1,0 +1,10 @@
+name: Test EaWX Framework
+on: [push]
+
+jobs:
+  run-tests:
+    runs-on: svenmarcus/eawx-dev:latest
+
+    steps:
+      - name: Run busted tests
+        run: busted .

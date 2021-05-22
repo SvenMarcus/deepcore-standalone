@@ -21,15 +21,15 @@ require("eawx/crossplot/GlobalValueEventBus")
 crossplot = {__instance = nil, __important = true}
 
 ---Initialize the main crossplot instance. Use only in GameScoring.
-function crossplot:master()
+function crossplot:main()
     if self.__instance then
         DebugMessage("crossplot has already been initialized in this plot")
         return
     end
 
-    DebugMessage("%s -- initializing MasterGlobalValueEventBus",
+    DebugMessage("%s -- initializing MainGlobalValueEventBus",
                  tostring(Script))
-    self.__instance = MasterGlobalValueEventBus()
+    self.__instance = MainGlobalValueEventBus()
 end
 
 ---Initialize crossplot for the galactic plot

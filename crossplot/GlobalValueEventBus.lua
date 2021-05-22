@@ -17,6 +17,7 @@
 --*****************************************************************************
 
 require("eawx/std/class")
+require("eawx/std/Observable")
 require("eawx/crossplot/serializer")
 require("eawx/crossplot/GlobalValueQueue")
 
@@ -41,18 +42,12 @@ function GlobalValueEventBus:subscribe(event_name, listener_function, optional_s
     }
 
     if not self.subscribers[event_name] then
-        self.subscribers[event_name] = {}
+        self.subscribers[event_name] = Observable()
     end
 
-    table.insert(
-        self.subscribers[event_name],
-        {
-            func = listener_function,
-            optional_self = optional_self
-        }
-    )
+    self.subscribers[event_name]:attach_listener(listener_function, optional_self)
 
-    self.message_queue:queue_value("busid:master:subscribe", subscription)
+    self.message_queue:queue_value("busid:main:subscribe", subscription)
     DebugMessage("Registered listener for %s", event_name)
 end
 
@@ -60,40 +55,27 @@ end
 ---@param listener_function function
 ---@param optional_self table
 function GlobalValueEventBus:unsubscribe(event_name, listener_function, optional_self)
-    if not self.subscribers[event_name] then
+    local subscribers = self.subscribers[event_name]
+
+    if not subscribers then
         return
     end
 
-    local del_index = self:get_subscriber_index(event_name, listener_function, optional_self)
-    if del_index then
-        table.remove(self.subscribers[event_name], del_index)
-    end
+    subscribers:detach_listener(listener_function, optional_self)
 
     local unsub = serializer:serialize {
         name = self.name,
         event = event_name
     }
 
-    self.message_queue:queue_value("busid:master:unsubscribe", unsub)
+    self.message_queue:queue_value("busid:main:unsubscribe", unsub)
     DebugMessage("Sent unsubscribe message for %s to master", event_name)
-end
-
----@private
----@return integer?
-function GlobalValueEventBus:get_subscriber_index(event_name, listener_function, optional_self)
-    for index, sub in ipairs(self.subscribers[event_name]) do
-        if sub.func == listener_function and sub.optional_self == optional_self then
-            return index
-        end
-    end
-
-    return nil
 end
 
 ---@param event_name string
 function GlobalValueEventBus:publish(event_name, ...)
     self.message_queue:queue_value(
-        "busid:master:publish",
+        "busid:main:publish",
         serializer:serialize {
             event_name = event_name,
             args = arg
@@ -114,17 +96,12 @@ function GlobalValueEventBus:process_notifications()
     local event_name = notification.event_name
     local args = notification.args
 
+    local subscribers = self.subscribers[event_name]
     if not self.subscribers[event_name] then
         return
     end
 
-    for _, subscriber in pairs(self.subscribers[event_name]) do
-        if subscriber.optional_self then
-            subscriber.func(subscriber.optional_self, unpack(args))
-        else
-            subscriber.func(unpack(args))
-        end
-    end
+    subscribers:notify(unpack(args))
 
     GlobalValue.Set("busid:" .. self.name .. ":notify", "")
 end
@@ -134,11 +111,11 @@ function GlobalValueEventBus:update()
     self.message_queue:process_global_values()
 end
 
----@class MasterGlobalValueEventBus
-MasterGlobalValueEventBus = class()
+---@class MainGlobalValueEventBus
+MainGlobalValueEventBus = class()
 
-function MasterGlobalValueEventBus:new()
-    self.name = "busid:master"
+function MainGlobalValueEventBus:new()
+    self.name = "busid:main"
 
     ---@type table<string, string[]>
     self.subscribers = {}
@@ -150,14 +127,14 @@ function MasterGlobalValueEventBus:new()
 end
 
 ---@private
-function MasterGlobalValueEventBus:process_subscriptions()
-    local subscriber = GlobalValue.Get("busid:master:subscribe")
+function MainGlobalValueEventBus:process_subscriptions()
+    local subscriber = GlobalValue.Get("busid:main:subscribe")
 
     if not subscriber or subscriber == "" then
         return
     end
 
-    DebugMessage("Registering subscriber in MasterGlobalValueEventBus")
+    DebugMessage("Registering subscriber in MainGlobalValueEventBus")
 
     subscriber = serializer:deserialize(subscriber)
 
@@ -178,18 +155,18 @@ function MasterGlobalValueEventBus:process_subscriptions()
     end
 
     table.insert(self.subscribers[subscriber.event], subscriber.name)
-    GlobalValue.Set("busid:master:subscribe", "")
+    GlobalValue.Set("busid:main:subscribe", "")
 end
 
 ---@private
-function MasterGlobalValueEventBus:process_unsubscriptions()
-    local unsubscriber = GlobalValue.Get("busid:master:unsubscribe")
+function MainGlobalValueEventBus:process_unsubscriptions()
+    local unsubscriber = GlobalValue.Get("busid:main:unsubscribe")
 
     if not unsubscriber or unsubscriber == "" then
         return
     end
 
-    DebugMessage("Trying to unsubscribe in MasterGlobalValueEventBus")
+    DebugMessage("Trying to unsubscribe in MainGlobalValueEventBus")
 
     unsubscriber = serializer:deserialize(unsubscriber)
 
@@ -215,12 +192,12 @@ function MasterGlobalValueEventBus:process_unsubscriptions()
         table.remove(self.subscribers[unsubscriber.event], del_index)
     end
 
-    GlobalValue.Set("busid:master:unsubscribe", "")
+    GlobalValue.Set("busid:main:unsubscribe", "")
 end
 
 ---@private
 ---@return integer?
-function MasterGlobalValueEventBus:get_subscriber_index(unsubscriber)
+function MainGlobalValueEventBus:get_subscriber_index(unsubscriber)
     for index, subscriber_name in ipairs(self.subscribers[unsubscriber.event]) do
         if unsubscriber.name == subscriber_name then
             return index
@@ -231,8 +208,8 @@ function MasterGlobalValueEventBus:get_subscriber_index(unsubscriber)
 end
 
 ---@private
-function MasterGlobalValueEventBus:process_publish_messages()
-    local publish_data = GlobalValue.Get("busid:master:publish")
+function MainGlobalValueEventBus:process_publish_messages()
+    local publish_data = GlobalValue.Get("busid:main:publish")
 
     if not publish_data or publish_data == "" then
         return
@@ -241,29 +218,30 @@ function MasterGlobalValueEventBus:process_publish_messages()
     publish_data = serializer:deserialize(publish_data)
 
     self:publish(publish_data.event_name, unpack(publish_data.args))
-    GlobalValue.Set("busid:master:publish", "")
+    GlobalValue.Set("busid:main:publish", "")
 end
 
 ---@param event_name string
-function MasterGlobalValueEventBus:subscribe(event_name, listener_function, optional_self)
+function MainGlobalValueEventBus:subscribe(event_name, listener_function, optional_self)
     if not self.local_subscribers[event_name] then
-        self.local_subscribers[event_name] = {}
+        self.local_subscribers[event_name] = Observable()
     end
 
-    table.insert(
-        self.local_subscribers[event_name],
-        {
-            func = listener_function,
-            optional_self = optional_self
-        }
-    )
+    self.local_subscribers[event_name]:attach_listener(listener_function, optional_self)
 
     DebugMessage("Registered local listener on master for %s", event_name)
 end
 
 ---@param event_name string
+---@param listener_function function
+function MainGlobalValueEventBus:unsubscribe(event_name, listener_function, optional_self)
+    self.local_subscribers[event_name]:detach_listener(listener_function, optional_self)
+end
+
+
+---@param event_name string
 ---@param ... varargs
-function MasterGlobalValueEventBus:publish(event_name, ...)
+function MainGlobalValueEventBus:publish(event_name, ...)
     self:publish_to_local_subscribers(event_name, arg)
     local subscribers = self.subscribers[event_name]
 
@@ -283,7 +261,7 @@ function MasterGlobalValueEventBus:publish(event_name, ...)
 end
 
 ---@private
-function MasterGlobalValueEventBus:publish_to_local_subscribers(event_name, arg_table)
+function MainGlobalValueEventBus:publish_to_local_subscribers(event_name, arg_table)
     local subscribers = self.local_subscribers[event_name]
 
     if not subscribers then
@@ -291,16 +269,10 @@ function MasterGlobalValueEventBus:publish_to_local_subscribers(event_name, arg_
     end
 
     DebugMessage("Publishing %s to local subscribers", tostring(event_name))
-    for _, subscriber in pairs(subscribers) do
-        if subscriber.optional_self then
-            subscriber.func(subscriber.optional_self, unpack(arg_table))
-        else
-            subscriber.func(unpack(arg_table))
-        end
-    end
+    subscribers:notify(unpack(arg_table))
 end
 
-function MasterGlobalValueEventBus:update()
+function MainGlobalValueEventBus:update()
     self:process_subscriptions()
     self:process_unsubscriptions()
     self:process_publish_messages()
