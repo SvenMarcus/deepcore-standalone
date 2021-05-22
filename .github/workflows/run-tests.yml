@@ -3,8 +3,14 @@ on: [push]
 
 jobs:
   run-tests:
-    runs-on: svenmarcus/eawx-dev:latest
+    runs-on: ubuntu:latest
 
     steps:
+      - name: Install lua5.1
+        run: apt-get install build-essential lua5.1 luarocks
+
+      - name: Install busted
+        run: luarocks install busted
+
       - name: Run busted tests
         run: busted .
