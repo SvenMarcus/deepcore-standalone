@@ -6,6 +6,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: Install lua5.1
         run: sudo apt-get install build-essential lua5.1 luarocks
 
