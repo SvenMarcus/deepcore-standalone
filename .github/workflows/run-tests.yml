@@ -7,10 +7,10 @@ jobs:
 
     steps:
       - name: Install lua5.1
-        run: apt-get install build-essential lua5.1 luarocks
+        run: sudo apt-get install build-essential lua5.1 luarocks
 
       - name: Install busted
-        run: luarocks install busted
+        run: sudo luarocks install busted
 
       - name: Run busted tests
         run: busted .
