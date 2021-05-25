@@ -10,7 +10,9 @@ local function setup_environment()
         return GlobalValue.store[key]
     end
 
-    function _G.DebugMessage(msg, ...) print(string.format(msg, ...)) end
+    function _G.DebugMessage(msg, ...) 
+        print(string.format(msg, ...))
+    end
 
     _G.Script = "MyScript"
 end

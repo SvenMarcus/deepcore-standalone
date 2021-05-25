@@ -1,11 +1,12 @@
-describe("crossplot MainGlobalEventBus", function()
+describe("crossplot MainKeyValueStoreBasedEventBus", function()
     local eaw_env = require("spec/eaw_env")
     local require_utilities = require("spec/require_utilities")
 
     before_each(function()
         eaw_env.setup_environment()
         require_utilities.replace_require()
-        require("crossplot/GlobalValueEventBus")
+        require("crossplot/KeyValueStoreBasedEventBus")
+        require("crossplot/GlobalValueKeyValueStore")
     end)
 
     after_each(function()
@@ -19,8 +20,8 @@ describe("crossplot MainGlobalEventBus", function()
 
     describe("Given subscribed function", function()
         before_each(function()
-            main = MainGlobalValueEventBus()
-            eventbus = GlobalValueEventBus("eventbus")
+            main = MainKeyValueStoreBasedEventBus(GlobalValueKeyValueStore())
+            eventbus = KeyValueStoreBasedEventBus("eventbus", GlobalValueKeyValueStore())
 
             subscriber_func = spy.new(function() end)
             eventbus:subscribe("MY_EVENT", subscriber_func)
@@ -63,8 +64,8 @@ describe("crossplot MainGlobalEventBus", function()
         local context
 
         before_each(function()
-            main = MainGlobalValueEventBus()
-            eventbus = GlobalValueEventBus("eventbus")
+            main = MainKeyValueStoreBasedEventBus(GlobalValueKeyValueStore())
+            eventbus = KeyValueStoreBasedEventBus("eventbus", GlobalValueKeyValueStore())
 
             context = {}
             subscriber_func = spy.new(function() end)
@@ -106,7 +107,7 @@ describe("crossplot MainGlobalEventBus", function()
 
     describe("Given subscribed function on main", function()
         before_each(function()
-            main = MainGlobalValueEventBus()
+            main = MainKeyValueStoreBasedEventBus(GlobalValueKeyValueStore())
 
             subscriber_func = spy.new(function() end)
             main:subscribe("MY_EVENT", subscriber_func)
@@ -137,7 +138,7 @@ describe("crossplot MainGlobalEventBus", function()
         local context
 
         before_each(function()
-            main = MainGlobalValueEventBus()
+            main = MainKeyValueStoreBasedEventBus()
 
             context = {}
             subscriber_func = spy.new(function() end)

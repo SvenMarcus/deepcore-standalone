@@ -18,25 +18,26 @@
 
 require("eawx/std/class")
 require("eawx/std/Observable")
-require("eawx/crossplot/serializer")
-require("eawx/crossplot/GlobalValueQueue")
+require("eawx/crossplot/MessageQueue")
 
----@class GlobalValueEventBus
-GlobalValueEventBus = class()
+---@class KeyValueStoreBasedEventBus
+KeyValueStoreBasedEventBus = class()
 
 ---@param name string
-function GlobalValueEventBus:new(name)
+---@param kv_store GlobalValueKeyValueStore
+function KeyValueStoreBasedEventBus:new(name, kv_store)
     self.name = (name or tostring(Script))
 
-    ---@type GlobalValueQueue
-    self.message_queue = GlobalValueQueue()
+    self.kv_store = kv_store
+
+    ---@type MessageQueue
+    self.message_queue = MessageQueue(kv_store)
     self.subscribers = {}
 end
 
 ---@param event_name string
-function GlobalValueEventBus:subscribe(event_name, listener_function, optional_self)
-    local subscription =
-        serializer:serialize {
+function KeyValueStoreBasedEventBus:subscribe(event_name, listener_function, optional_self)
+    local subscription = {
         name = self.name,
         event = event_name
     }
@@ -54,7 +55,7 @@ end
 ---@param event_name string
 ---@param listener_function function
 ---@param optional_self table
-function GlobalValueEventBus:unsubscribe(event_name, listener_function, optional_self)
+function KeyValueStoreBasedEventBus:unsubscribe(event_name, listener_function, optional_self)
     local subscribers = self.subscribers[event_name]
 
     if not subscribers then
@@ -63,7 +64,7 @@ function GlobalValueEventBus:unsubscribe(event_name, listener_function, optional
 
     subscribers:detach_listener(listener_function, optional_self)
 
-    local unsub = serializer:serialize {
+    local unsub = {
         name = self.name,
         event = event_name
     }
@@ -73,10 +74,10 @@ function GlobalValueEventBus:unsubscribe(event_name, listener_function, optional
 end
 
 ---@param event_name string
-function GlobalValueEventBus:publish(event_name, ...)
+function KeyValueStoreBasedEventBus:publish(event_name, ...)
     self.message_queue:queue_value(
         "busid:main:publish",
-        serializer:serialize {
+        {
             event_name = event_name,
             args = arg
         }
@@ -84,14 +85,12 @@ function GlobalValueEventBus:publish(event_name, ...)
 end
 
 ---@private
-function GlobalValueEventBus:process_notifications()
-    local notification = GlobalValue.Get("busid:" .. self.name .. ":notify")
+function KeyValueStoreBasedEventBus:process_notifications()
+    local notification = self.kv_store:get("busid:" .. self.name .. ":notify")
 
     if not notification or notification == "" then
         return
     end
-
-    notification = serializer:deserialize(notification)
 
     local event_name = notification.event_name
     local args = notification.args
@@ -103,18 +102,18 @@ function GlobalValueEventBus:process_notifications()
 
     subscribers:notify(unpack(args))
 
-    GlobalValue.Set("busid:" .. self.name .. ":notify", "")
+    self.kv_store:free("busid:" .. self.name .. ":notify")
 end
 
-function GlobalValueEventBus:update()
+function KeyValueStoreBasedEventBus:update()
     self:process_notifications()
-    self.message_queue:process_global_values()
+    self.message_queue:process()
 end
 
----@class MainGlobalValueEventBus
-MainGlobalValueEventBus = class()
+---@class MainKeyValueStoreBasedEventBus
+MainKeyValueStoreBasedEventBus = class()
 
-function MainGlobalValueEventBus:new()
+function MainKeyValueStoreBasedEventBus:new(kv_store)
     self.name = "busid:main"
 
     ---@type table<string, string[]>
@@ -123,20 +122,19 @@ function MainGlobalValueEventBus:new()
     ---@type table<string, table>
     self.local_subscribers = {}
 
-    self.message_queue = GlobalValueQueue()
+    self.kv_store = kv_store
+    self.message_queue = MessageQueue(kv_store)
 end
 
 ---@private
-function MainGlobalValueEventBus:process_subscriptions()
-    local subscriber = GlobalValue.Get("busid:main:subscribe")
+function MainKeyValueStoreBasedEventBus:process_subscriptions()
+    local subscriber = self.kv_store:get("busid:main:subscribe")
 
     if not subscriber or subscriber == "" then
         return
     end
 
-    DebugMessage("Registering subscriber in MainGlobalValueEventBus")
-
-    subscriber = serializer:deserialize(subscriber)
+    DebugMessage("Registering subscriber in MainKeyValueStoreBasedEventBus")
 
     if type(subscriber) ~= "table" then
         return
@@ -155,20 +153,18 @@ function MainGlobalValueEventBus:process_subscriptions()
     end
 
     table.insert(self.subscribers[subscriber.event], subscriber.name)
-    GlobalValue.Set("busid:main:subscribe", "")
+    self.kv_store:free("busid:main:subscribe")
 end
 
 ---@private
-function MainGlobalValueEventBus:process_unsubscriptions()
-    local unsubscriber = GlobalValue.Get("busid:main:unsubscribe")
+function MainKeyValueStoreBasedEventBus:process_unsubscriptions()
+    local unsubscriber = self.kv_store:get("busid:main:unsubscribe")
 
     if not unsubscriber or unsubscriber == "" then
         return
     end
 
-    DebugMessage("Trying to unsubscribe in MainGlobalValueEventBus")
-
-    unsubscriber = serializer:deserialize(unsubscriber)
+    DebugMessage("Trying to unsubscribe in MainKeyValueStoreBasedEventBus")
 
     if type(unsubscriber) ~= "table" then
         return
@@ -192,12 +188,12 @@ function MainGlobalValueEventBus:process_unsubscriptions()
         table.remove(self.subscribers[unsubscriber.event], del_index)
     end
 
-    GlobalValue.Set("busid:main:unsubscribe", "")
+    self.kv_store:free("busid:main:unsubscribe")
 end
 
 ---@private
 ---@return integer?
-function MainGlobalValueEventBus:get_subscriber_index(unsubscriber)
+function MainKeyValueStoreBasedEventBus:get_subscriber_index(unsubscriber)
     for index, subscriber_name in ipairs(self.subscribers[unsubscriber.event]) do
         if unsubscriber.name == subscriber_name then
             return index
@@ -208,21 +204,21 @@ function MainGlobalValueEventBus:get_subscriber_index(unsubscriber)
 end
 
 ---@private
-function MainGlobalValueEventBus:process_publish_messages()
-    local publish_data = GlobalValue.Get("busid:main:publish")
+function MainKeyValueStoreBasedEventBus:process_publish_messages()
+    local publish_data = self.kv_store:get("busid:main:publish")
 
     if not publish_data or publish_data == "" then
         return
     end
 
-    publish_data = serializer:deserialize(publish_data)
-
     self:publish(publish_data.event_name, unpack(publish_data.args))
-    GlobalValue.Set("busid:main:publish", "")
+    self.kv_store:free("busid:main:publish")
 end
 
 ---@param event_name string
-function MainGlobalValueEventBus:subscribe(event_name, listener_function, optional_self)
+---@param listener_function function
+---@param optional_self table
+function MainKeyValueStoreBasedEventBus:subscribe(event_name, listener_function, optional_self)
     if not self.local_subscribers[event_name] then
         self.local_subscribers[event_name] = Observable()
     end
@@ -234,14 +230,14 @@ end
 
 ---@param event_name string
 ---@param listener_function function
-function MainGlobalValueEventBus:unsubscribe(event_name, listener_function, optional_self)
+---@param optional_self table
+function MainKeyValueStoreBasedEventBus:unsubscribe(event_name, listener_function, optional_self)
     self.local_subscribers[event_name]:detach_listener(listener_function, optional_self)
 end
 
 
 ---@param event_name string
----@param ... varargs
-function MainGlobalValueEventBus:publish(event_name, ...)
+function MainKeyValueStoreBasedEventBus:publish(event_name, ...)
     self:publish_to_local_subscribers(event_name, arg)
     local subscribers = self.subscribers[event_name]
 
@@ -252,7 +248,7 @@ function MainGlobalValueEventBus:publish(event_name, ...)
     for _, subscriber_name in pairs(subscribers) do
         self.message_queue:queue_value(
             "busid:" .. subscriber_name .. ":notify",
-            serializer:serialize {
+            {
                 event_name = event_name,
                 args = arg
             }
@@ -261,7 +257,7 @@ function MainGlobalValueEventBus:publish(event_name, ...)
 end
 
 ---@private
-function MainGlobalValueEventBus:publish_to_local_subscribers(event_name, arg_table)
+function MainKeyValueStoreBasedEventBus:publish_to_local_subscribers(event_name, arg_table)
     local subscribers = self.local_subscribers[event_name]
 
     if not subscribers then
@@ -272,9 +268,9 @@ function MainGlobalValueEventBus:publish_to_local_subscribers(event_name, arg_ta
     subscribers:notify(unpack(arg_table))
 end
 
-function MainGlobalValueEventBus:update()
+function MainKeyValueStoreBasedEventBus:update()
     self:process_subscriptions()
     self:process_unsubscriptions()
     self:process_publish_messages()
-    self.message_queue:process_global_values()
+    self.message_queue:process()
 end

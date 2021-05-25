@@ -19,19 +19,22 @@
 require("eawx/std/class")
 require("eawx/std/Queue")
 
----@class GlobalValueQueue
-GlobalValueQueue = class()
+---@class MessageQueue
+MessageQueue = class()
 
 ---@private
-function GlobalValueQueue:new()
+function MessageQueue:new(kv_store)
     ---@private
     ---@type table<string, Queue>
     self.global_values = {}
+
+    ---@private
+    self.kv_store = kv_store
 end
 
 ---@param key string
 ---@param value string
-function GlobalValueQueue:queue_value(key, value)
+function MessageQueue:queue_value(key, value)
     if not self.global_values[key] then
         self.global_values[key] = Queue()
     end
@@ -39,21 +42,21 @@ function GlobalValueQueue:queue_value(key, value)
     self.global_values[key]:add(value)
 end
 
-function GlobalValueQueue:process_global_values()
-    DebugMessage("In GlobalValueQueue:process_global_values()")
+function MessageQueue:process()
+    DebugMessage("In MessageQueue:process()")
     for key, queue in pairs(self.global_values) do
         if self:can_send(key) and queue.size > 0 then
             local value = queue:remove()
-            DebugMessage("Sending GlobalValue with key %s and value %s", tostring(key), tostring(value))
-            GlobalValue.Set(key, value)
+            DebugMessage("Sending Key-Value Pair with key %s and value %s", tostring(key), tostring(value))
+            self.kv_store:store(key, value)
         end
     end
 end
 
 ---@private
-function GlobalValueQueue:can_send(key)
-    local value = GlobalValue.Get(key)
+function MessageQueue:can_send(key)
+    local value = self.kv_store:get(key)
     return not value or value == ""
 end
 
-return GlobalValueQueue
+return MessageQueue

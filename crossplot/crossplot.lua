@@ -15,7 +15,8 @@
 -- *   @Filename:            crossplot.lua
 -- *   @License:             MIT
 -- *****************************************************************************
-require("eawx/crossplot/GlobalValueEventBus")
+require("eawx/crossplot/KeyValueStoreBasedEventBus")
+require("eawx/crossplot/GlobalValueKeyValueStore")
 
 ---A module that allows publish-subscribe communication between different Lua script environments
 crossplot = {__instance = nil, __important = true}
@@ -27,9 +28,9 @@ function crossplot:main()
         return
     end
 
-    DebugMessage("%s -- initializing MainGlobalValueEventBus",
+    DebugMessage("%s -- initializing MainKeyValueStoreBasedEventBus",
                  tostring(Script))
-    self.__instance = MainGlobalValueEventBus()
+    self.__instance = MainKeyValueStoreBasedEventBus(GlobalValueKeyValueStore())
 end
 
 ---Initialize crossplot for the galactic plot
@@ -39,8 +40,8 @@ function crossplot:galactic()
         return
     end
 
-    DebugMessage("%s -- initializing GlobalValueEventBus", tostring(Script))
-    self.__instance = GlobalValueEventBus()
+    DebugMessage("%s -- initializing KeyValueStoreBasedEventBus", tostring(Script))
+    self.__instance = KeyValueStoreBasedEventBus(tostring(Script), GlobalValueKeyValueStore())
 end
 
 ---Initialize crossplot on a tactical plot
@@ -50,8 +51,8 @@ function crossplot:tactical()
         return
     end
 
-    DebugMessage("%s -- initializing GlobalValueEventBus", tostring(Script))
-    self.__instance = GlobalValueEventBus("crossplot:tactical")
+    DebugMessage("%s -- initializing KeyValueStoreBasedEventBus", tostring(Script))
+    self.__instance = KeyValueStoreBasedEventBus("crossplot:tactical", GlobalValueKeyValueStore())
 end
 
 ---Initialize crossplot for on a script attached to a game object
@@ -61,9 +62,9 @@ function crossplot:game_object()
         return
     end
 
-    DebugMessage("%s -- initializing GlobalValueEventBus", tostring(Script))
+    DebugMessage("%s -- initializing KeyValueStoreBasedEventBus", tostring(Script))
     local name = tostring(Object)
-    self.__instance = GlobalValueEventBus(name)
+    self.__instance = KeyValueStoreBasedEventBus(name, GlobalValueKeyValueStore())
 end
 
 ---Subscribe to a crossplot event

@@ -30,6 +30,10 @@ function serializer:serialize(tab, nested)
         result = result .. "return {"
     end
 
+    if type(tab) ~= "table" then
+        return "return "..serializer:_serializeValue(tab)
+    end
+
     local hasEntries = false
     for k, v in pairs(tab) do
         hasEntries = true

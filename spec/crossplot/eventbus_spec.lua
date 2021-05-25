@@ -1,38 +1,42 @@
-describe("crossplot", function()
+describe("Eventbus", function()
     local require_utilities
     local eaw_env
 
     local busid
+    local eventbus
+
+    local fake_kvstore
 
     before_each(function()
+        local make_fake_kvstore = require("spec.crossplot.fake_kvstore")
+
         require_utilities = require("spec/require_utilities")
         require_utilities.replace_require()
-
+        
         eaw_env = require("spec/eaw_env")
         eaw_env.setup_environment()
-
+        
         busid = "busid:".._G.Script
-
-        require("crossplot/crossplot")
+        
+        require("crossplot/KeyValueStoreBasedEventBus")
+        fake_kvstore = make_fake_kvstore()
+        eventbus = KeyValueStoreBasedEventBus(_G.Script, fake_kvstore)
     end)
 
     after_each(function()
         require_utilities.reset_require()
         eaw_env.teardown_environment()
-        _G.crossplot = nil
-        package.loaded["crossplot/crossplot"] = nil
+        fake_kvstore:clear()
     end)
 
     describe("When subscribing to an event", function()
         it("should set the GlobalValue for the master event bus", function()
-            crossplot:galactic()
-
             local function func() end
-            crossplot:subscribe("MY_EVENT", func)
-
-            crossplot:update()
+            eventbus:subscribe("MY_EVENT", func)
             
-            local subscriber = loadstring(GlobalValue.Get("busid:main:subscribe"))()
+            eventbus:update()
+
+            local subscriber = fake_kvstore:get("busid:main:subscribe")
             assert.are.equal(subscriber.name, Script)
             assert.are.equal(subscriber.event, "MY_EVENT")
         end)
@@ -41,42 +45,36 @@ describe("crossplot", function()
     describe("Given subscribed to an event", function()
         describe("when publishing event", function()
             it("should call the callback function", function()
-                crossplot:galactic()
-                
                 local func = spy.new(function() end)
-                crossplot:subscribe("MY_EVENT", func)        
-                GlobalValue.Set(busid..":notify", "return { event_name = 'MY_EVENT', args = {4, 2} }")
+                eventbus:subscribe("MY_EVENT", func)
+                fake_kvstore:store(busid..":notify", { event_name = 'MY_EVENT', args = {4, 2} })
 
-                crossplot:update()
+                eventbus:update()
 
                 assert.spy(func).was.called_with(4, 2)
             end)
 
             it("should reset the GlobalValue", function()
-                crossplot:galactic()
-                
-                local func = spy.new(function() end)
-                crossplot:subscribe("MY_EVENT", func)        
-                GlobalValue.Set(busid..":notify", "return { event_name = 'MY_EVENT', args = {4, 2} }")
+                local func = function() end
+                eventbus:subscribe("MY_EVENT", func)
+                fake_kvstore:store(busid..":notify", { event_name = 'MY_EVENT', args = {4, 2} })
 
-                crossplot:update()
+                eventbus:update()
 
-                assert.are.equal("", GlobalValue.Get(busid..":notify"))
+                assert.is_nil(fake_kvstore:get(busid..":notify"))
             end)
         end)
 
         describe("when unsubscribing", function()
             it("should set the GlobalValue for the master event bus", function()
-                crossplot:galactic()
-
                 local function func() end
-                crossplot:subscribe("MY_EVENT", func)
-                crossplot:update()
+                eventbus:subscribe("MY_EVENT", func)
+                eventbus:update()
 
-                crossplot:unsubscribe("MY_EVENT", func)
-                crossplot:update()
+                eventbus:unsubscribe("MY_EVENT", func)
+                eventbus:update()
 
-                local unsubscriber = loadstring(GlobalValue.Get("busid:main:unsubscribe"))()
+                local unsubscriber = fake_kvstore:get("busid:main:unsubscribe")
                 assert.are.equal(unsubscriber.name, _G.Script)
                 assert.are.equal(unsubscriber.event, "MY_EVENT")
             end)
