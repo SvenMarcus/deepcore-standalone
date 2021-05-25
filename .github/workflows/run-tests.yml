@@ -15,7 +15,9 @@ jobs:
         run: sudo apt-get install build-essential lua5.1 luarocks
 
       - name: Install busted
-        run: sudo luarocks install busted
+        run: |
+          sudo luarocks install busted
+          sudo luarocks install busted-htest
 
       - name: Run busted tests
-        run: busted --defer-print .
+        run: busted --defer-print -o htest .
