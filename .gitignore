@@ -3,3 +3,5 @@
 
 # LuaCov output
 *.out
+*.html
+coverage.xml
