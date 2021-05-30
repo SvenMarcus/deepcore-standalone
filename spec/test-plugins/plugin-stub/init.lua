@@ -5,7 +5,10 @@ return {
     init = function(self, ctx)
         return {
             plugin_info = "PLUGIN_STUB",
-            context = ctx
+            context = ctx,
+            update = function(self)
+                table.insert(self.context.updated_plugins, "plugin-stub")
+            end
         }
     end
 }

@@ -1,13 +1,14 @@
 return {
     target = function()
-        return false
+        return true
     end,
     requires_planets = true,
     init = function(self, ctx)
         return {
-            plugin_info = "PLANET_PLUGIN",
+            context = ctx,
+            plugin_info = "ACTIVE_PLANET_PLUGIN",
             update = function(self)
-                table.insert(self.context.updated_plugins, "planet-plugin")
+                table.insert(self.context.updated_plugins, "active-planet-plugin")
             end
         }
     end
