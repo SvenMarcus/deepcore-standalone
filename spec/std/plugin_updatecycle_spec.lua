@@ -30,7 +30,11 @@ describe("Plugin Update Cycle", function()
     end)
 
     describe("When calling generic update cycle", function()
-        local generic_plugin_update_cycle = require("std.plugin_updatecycle").generic_plugin_update_cycle
+        local generic_plugin_update_cycle
+
+        before_each(function()
+            generic_plugin_update_cycle = require("std.plugin_updatecycle").generic_plugin_update_cycle
+        end)
         
         it("should update plugins", function()
             local first = make_mock_plugin_container(true)
@@ -83,6 +87,10 @@ describe("Plugin Update Cycle", function()
 
     describe("When calling galactic update cycle", function()
         local galactic_plugin_update_cycle = require("std.plugin_updatecycle").galactic_plugin_update_cycle
+
+        before_each(function()
+            galactic_plugin_update_cycle = require("std.plugin_updatecycle").galactic_plugin_update_cycle
+        end)
 
         it("should update generic plugins", function()
             local first = make_mock_plugin_container(true)
