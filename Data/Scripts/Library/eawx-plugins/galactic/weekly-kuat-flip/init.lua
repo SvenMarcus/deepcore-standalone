@@ -16,7 +16,7 @@
 --*   @License:             MIT
 --*****************************************************************************
 
-require("eawx/std/plugintargets")
+require("deepcore/std/plugintargets")
 
 return {
     target = PluginTargets.interval(45),

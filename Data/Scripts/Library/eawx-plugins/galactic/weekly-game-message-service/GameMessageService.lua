@@ -19,7 +19,7 @@
 --*       License:           This code may not be used without the author's explicit permission    *
 --**************************************************************************************************
 
-require("eawx/std/class")
+require("deepcore/std/class")
 
 ---@class GameMessageService
 GameMessageService = class()

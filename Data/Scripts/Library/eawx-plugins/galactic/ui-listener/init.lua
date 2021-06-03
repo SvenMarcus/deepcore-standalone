@@ -16,7 +16,7 @@
 --*   @License:             MIT
 --*****************************************************************************
 
-require("eawx/std/plugintargets")
+require("deepcore/std/plugintargets")
 
 return {
     target = PluginTargets.story_flag("SELECT_CREDIT_FILTER"),

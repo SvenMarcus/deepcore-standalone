@@ -16,7 +16,7 @@
 --*   @License:             MIT
 --*****************************************************************************
 
-require("eawx/std/plugintargets")
+require("deepcore/std/plugintargets")
 require("eawx-plugins/gameobject/space/microjump/Microjump")
 
 return {

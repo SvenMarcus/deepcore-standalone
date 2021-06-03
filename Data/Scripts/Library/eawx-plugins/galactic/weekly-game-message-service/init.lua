@@ -19,7 +19,7 @@
 --*       License:           This code may not be used without the author's explicit permission    *
 --**************************************************************************************************
 
-require("eawx/std/plugintargets")
+require("deepcore/std/plugintargets")
 require("eawx-plugins/galactic/weekly-game-message-service/GameMessageService")
 
 return {

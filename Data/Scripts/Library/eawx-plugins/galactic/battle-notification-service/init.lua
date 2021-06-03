@@ -1,4 +1,4 @@
-require("eawx/std/plugintargets")
+require("deepcore/std/plugintargets")
 
 return {
     target = PluginTargets.never(),

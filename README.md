@@ -54,7 +54,7 @@ They also need to contain a file called `init.lua` that returns a plugin definit
 ### Skeleton of a plugin definition
 
 ```lua
-require("eawx/std/plugintargets")
+require("deepcore/std/plugintargets")
 require("eawx-plugins/my-plugin/MyPlugin")
 
 return {
@@ -70,7 +70,7 @@ return {
 ### Skeleton of a plugin class
 
 ```lua
-require("eawx/std/class")
+require("deepcore/std/class")
 
 ---@class MyPlugin
 MyPlugin = class()
@@ -164,7 +164,7 @@ require("PGDebug")
 require("PGStateMachine")
 require("PGStoryMode")
 
-require("eawx/std/EawXMod")
+require("deepcore/std/EawXMod")
 
 function Definitions()
     DebugMessage("%s -- In Definitions", tostring(Script))
@@ -214,7 +214,7 @@ function State_Init(message)
         local context = {}
         local plugins = { "microjump" }
 
-        EawXGameObject = require("eawx/std/EawXGameObject")
+        EawXGameObject = require("deepcore/std/EawXGameObject")
         EawXObj = EawXGameObject(context, plugins)
     elseif message == OnUpdate then
         EawXObj:update()
@@ -237,7 +237,7 @@ The code snippet below demonstrates the structure of the `init.lua` file.
   <summary>Click to see init.lua of production-listener</summary>
 
 ```lua
-require("eawx/std/plugintargets")
+require("deepcore/std/plugintargets")
 require("eawx-plugins/production-listener/ProductionFinishedListener")
 
 return {
@@ -271,7 +271,7 @@ As specified in the previous section most plugin objects require an `update` fun
   <summary>Click to see a simple table with an update function</summary>
 
 ```lua
-require("eawx/std/plugintargets")
+require("deepcore/std/plugintargets")
 
 return {
     target = PluginTargets.interval(45)
@@ -297,7 +297,7 @@ The following example demonstrates how to listen to the events defined in the `G
   <summary>Click to see the ProductionFinishedListener plugin</summary>
 
 ```lua
-require("eawx/std/class")
+require("deepcore/std/class")
 
 ---@class ProductionFinishedListener
 ProductionFinishedListener = class()
@@ -361,7 +361,7 @@ return {
   <summary>Click to see the GameMessageService plugin</summary>
 
 ```lua
-require("eawx/std/class")
+require("deepcore/std/class")
 
 ---@class GameMessageService
 GameMessageService = class()
@@ -397,7 +397,7 @@ require("PGDebug")
 require("PGStateMachine")
 require("PGStoryMode")
 
-require("eawx/crossplot/crossplot")
+require("deepcore/crossplot/crossplot")
 
 function Definitions()
     DebugMessage("%s -- In Definitions", tostring(Script))
@@ -430,7 +430,7 @@ require("PGDebug")
 require("PGStateMachine")
 require("PGStoryMode")
 
-require("eawx/crossplot/crossplot")
+require("deepcore/crossplot/crossplot")
 
 function Definitions()
     DebugMessage("%s -- In Definitions", tostring(Script))

@@ -17,7 +17,7 @@
 --*****************************************************************************
 
 require("PGBase")
-require("eawx/std/class")
+require("deepcore/std/class")
 
 ---@class Microjump
 Microjump = class()

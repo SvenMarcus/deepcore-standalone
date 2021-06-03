@@ -1,5 +1,5 @@
 require("pgcommands")
-require("eawx/std/deepcore")
+require("deepcore/std/deepcore")
 
 -- Don't pool...
 ScriptPoolCount = 0

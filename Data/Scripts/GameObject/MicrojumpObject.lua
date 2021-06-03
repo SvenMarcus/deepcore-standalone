@@ -18,7 +18,7 @@
 
 require("PGCommands")
 require("PGStateMachine")
-require("eawx/std/deepcore")
+require("deepcore/std/deepcore")
 
 function Definitions()
     DebugMessage("%s -- In Definitions", tostring(Script))
