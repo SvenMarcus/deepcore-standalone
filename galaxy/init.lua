@@ -1,3 +1,3 @@
-require("eawx/galaxy/GalacticConquest")
-require("eawx/galaxy/GalacticEvents")
-require("eawx/galaxy/Planet")
+require("deepcore/galaxy/GalacticConquest")
+require("deepcore/galaxy/GalacticEvents")
+require("deepcore/galaxy/Planet")

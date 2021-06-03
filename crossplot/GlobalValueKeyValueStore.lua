@@ -1,5 +1,5 @@
-require("eawx/std/class")
-require("eawx/crossplot/serializer")
+require("deepcore/std/class")
+require("deepcore/crossplot/serializer")
 
 ---@class GlobalValueKeyValueStore
 GlobalValueKeyValueStore = class()

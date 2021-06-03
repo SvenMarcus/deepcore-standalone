@@ -16,9 +16,9 @@
 --*   @License:             MIT
 --*****************************************************************************
 
-require("eawx/std/class")
-require("eawx/galaxy/GalacticEvents")
-require("eawx/galaxy/Planet")
+require("deepcore/std/class")
+require("deepcore/galaxy/GalacticEvents")
+require("deepcore/galaxy/Planet")
 
 ---@class GalacticConquest
 GalacticConquest = class()

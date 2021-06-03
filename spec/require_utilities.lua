@@ -4,8 +4,8 @@ local require_utilities = {
 
 function require_utilities.replace_require()
     _G.require = function(path)
-        if string.sub(path, 1, string.len("eawx/")) == "eawx/" then
-            return require_utilities.original_require(string.sub(path, string.len("eawx/") + 1))
+        if string.sub(path, 1, string.len("deepcore/")) == "deepcore/" then
+            return require_utilities.original_require(string.sub(path, string.len("deepcore/") + 1))
         end
 
         return require_utilities.original_require(path)

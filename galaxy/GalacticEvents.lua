@@ -16,9 +16,9 @@
 --*   @License:             MIT
 --*****************************************************************************
 
-require("eawx/std/class")
-require("eawx/std/Observable")
-require("eawx/crossplot/crossplot")
+require("deepcore/std/class")
+require("deepcore/std/Observable")
+require("deepcore/crossplot/crossplot")
 
 ---@class PlanetOwnerChangedEvent : Observable
 PlanetOwnerChangedEvent = class(Observable)

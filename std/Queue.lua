@@ -16,7 +16,7 @@
 --*   @License:             MIT
 --*****************************************************************************
 
-require("eawx/std/class")
+require("deepcore/std/class")
 
 ---A First-In-First-Out Collection Data Structure
 ---@class Queue
