@@ -20,7 +20,7 @@ require("PGDebug")
 require("PGStateMachine")
 require("PGStoryMode")
 
-require("eawx/std/EawXMod")
+require("eawx/std/deepcore")
 
 function Definitions()
     DebugMessage("%s -- In Definitions", tostring(Script))
@@ -36,7 +36,10 @@ function Begin_GC(message)
         -- the init() function of your plugins
         local context = {}
 
-        ActiveMod = EawXMod(context)
+        ActiveMod = deepcore:galactic {
+            context = context,
+            plugin_folder = "eawx-plugins/galactic"
+        }
     elseif message == OnUpdate then
         ActiveMod:update()
     end
