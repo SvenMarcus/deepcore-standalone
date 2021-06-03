@@ -36,11 +36,11 @@ function Begin_GC(message)
         -- the init() function of your plugins
         local context = {}
 
-        ActiveMod = deepcore:galactic {
+        DeepCoreRunner = deepcore:galactic {
             context = context,
             plugin_folder = "eawx-plugins/galactic"
         }
     elseif message == OnUpdate then
-        ActiveMod:update()
+        DeepCoreRunner:update()
     end
 end

@@ -18,6 +18,7 @@
 
 require("PGCommands")
 require("PGStateMachine")
+require("eawx/std/deepcore")
 
 function Definitions()
     DebugMessage("%s -- In Definitions", tostring(Script))
@@ -31,12 +32,11 @@ function State_Init(message)
             ScriptExit()
         end
 
-        local context = {}
-        local plugins = { "microjump" }
-
-        EawXGameObject = require("eawx/std/EawXGameObject")
-        EawXObj = EawXGameObject(context, plugins)
+        DeepCoreRunner = deepcore:game_object {
+            context = {},
+            plugins = { "microjump" }
+        }
     elseif message == OnUpdate then
-        EawXObj:update()
+        DeepCoreRunner:update()
     end
 end
