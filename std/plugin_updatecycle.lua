@@ -1,4 +1,4 @@
-require("eawx/std/callable")
+require("deepcore/std/callable")
 
 local function allowed_to_update(target_cache, container)
     local can_update = target_cache[container.target]

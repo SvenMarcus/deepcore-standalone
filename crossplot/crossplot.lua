@@ -15,8 +15,8 @@
 -- *   @Filename:            crossplot.lua
 -- *   @License:             MIT
 -- *****************************************************************************
-require("eawx/crossplot/KeyValueStoreBasedEventBus")
-require("eawx/crossplot/GlobalValueKeyValueStore")
+require("deepcore/crossplot/KeyValueStoreBasedEventBus")
+require("deepcore/crossplot/GlobalValueKeyValueStore")
 
 ---A module that allows publish-subscribe communication between different Lua script environments
 crossplot = {__instance = nil, __important = true}

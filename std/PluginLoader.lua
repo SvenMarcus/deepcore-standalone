@@ -16,7 +16,7 @@
 --*   @License:             MIT
 --*****************************************************************************
 
-require("eawx/std/class")
+require("deepcore/std/class")
 
 ---@class PluginLoader
 PluginLoader = class()

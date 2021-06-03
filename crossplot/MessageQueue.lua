@@ -16,8 +16,8 @@
 --*   @License:             MIT
 --*****************************************************************************
 
-require("eawx/std/class")
-require("eawx/std/Queue")
+require("deepcore/std/class")
+require("deepcore/std/Queue")
 
 ---@class MessageQueue
 MessageQueue = class()
