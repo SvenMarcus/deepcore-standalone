@@ -107,6 +107,22 @@ describe("DeepCore", function()
 
                 assert.are.same({"plugin-stub", "active-planet-plugin"}, context.updated_plugins)
             end)
+
+            it("should update crossplot", function()
+                require("crossplot/crossplot")
+                
+                spy.on(crossplot, "update")
+                
+                local deepcore_runner = deepcore:galactic {
+                    context = {},
+                    plugins = {},
+                    plugin_folder = "spec/test-plugins"
+                }
+
+                deepcore_runner:update()
+
+                assert.spy(crossplot.update).was.called()
+            end)
         end)
     end)
 
@@ -136,6 +152,22 @@ describe("DeepCore", function()
             }
 
             assert.spy(_G.crossplot.game_object).was.called()
+        end)
+
+        it("should update crossplot", function()
+            require("crossplot/crossplot")
+            
+            spy.on(crossplot, "update")
+            
+            local deepcore_runner = deepcore:game_object {
+                context = {},
+                plugins = {},
+                plugin_folder = "spec/test-plugins"
+            }
+
+            deepcore_runner:update()
+
+            assert.spy(crossplot.update).was.called()
         end)
     end)
 
