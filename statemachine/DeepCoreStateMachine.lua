@@ -23,14 +23,23 @@ function DeepCoreStateMachine:new(initial_state, initial_context)
 end
 
 function DeepCoreStateMachine:update()
+    if not self.active_state then
+        return
+    end
+
     self.active_state:update()
 end
 
 ---@private
 ---@param new_state DeepCoreState
 function DeepCoreStateMachine:on_state_exit(new_state, state_context)
-    self.active_state.on_exit:detach_listener(self.on_state_exit)
+    self.active_state.on_exit:detach_listener(self.on_state_exit, self)
     self.active_state = new_state
+
+    if not new_state then
+        return
+    end
+
     self.active_state.on_exit:attach_listener(self.on_state_exit, self)
     self.active_state:initialise(state_context)
 end

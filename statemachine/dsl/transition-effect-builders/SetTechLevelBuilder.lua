@@ -1,6 +1,5 @@
 require("deepcore/std/class")
 require("deepcore/std/callable")
-require("eawx-util/StoryUtil")
 
 ---@class SetTechLevelBuilder
 SetTechLevelBuilder = class()
@@ -9,13 +8,13 @@ SetTechLevelBuilder = class()
 function SetTechLevelBuilder:new(level)
     self.level = level
 
-    ---@type PlayerObject
+    ---@type table<number, string>
     self.factions = {}
 end
 
----@param factions string
-function SetTechLevelBuilder:for_factions(factions)
-    self.factions = factions
+---@vararg string
+function SetTechLevelBuilder:for_factions(...)
+    self.factions = arg
     return self
 end
 
@@ -24,9 +23,11 @@ function SetTechLevelBuilder:build()
         factions = self.factions,
         tech_level = self.level,
         call = function(self)
-            for _, faction in pairs(self.factions) do
+            for _, faction in ipairs(self.factions) do
                 local player_object = Find_Player(faction)
-                StoryUtil.SetTechLevel(player_object, self.tech_level)
+                if player_object then
+                    player_object.Set_Tech_Level(self.tech_level)
+                end
             end
         end
     }

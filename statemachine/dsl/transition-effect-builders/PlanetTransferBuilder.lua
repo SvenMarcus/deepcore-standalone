@@ -1,8 +1,5 @@
 require("deepcore/std/class")
 require("deepcore/std/callable")
-require("eawx-util/ChangeOwnerUtilities")
-require("deepcore/statemachine/dsl/conditions")
-require("eawx-util/StoryUtil")
 
 ---@class PlanetTransferBuilder
 PlanetTransferBuilder = class()
@@ -17,6 +14,13 @@ function PlanetTransferBuilder:new(...)
     ---@type PlayerObject
     self.target_owner = nil
 
+    ---@param planet PlanetObject
+    ---@param new_owner PlayerObject
+    ---@return nil
+    function self.change_owner_strategy(planet, new_owner)
+        planet.Change_Owner(new_owner)
+    end
+
     ---@type fun(): boolean
     self.condition = function()
         return true
@@ -29,6 +33,11 @@ function PlanetTransferBuilder:to_owner(faction_name)
     return self
 end
 
+---@param func fun(planet: PlanetObject, new_owner: PlayerObject): nil
+function PlanetTransferBuilder:with_change_owner_strategy(func)
+    self.change_owner_strategy = func
+    return self
+end
 
 ---@param condition fun(): boolean
 function PlanetTransferBuilder:if_(condition)
@@ -41,15 +50,12 @@ function PlanetTransferBuilder:build()
         planets = self.planets,
         new_owner = self.target_owner,
         condition = self.condition,
-        Active_Planets = self.Active_Planets,
-        call = function(self) 
-            self.Active_Planets = StoryUtil.GetSafePlanetTable()
+        change_owner_strategy = self.change_owner_strategy,
+        call = function(self)
             for _, planet in ipairs(self.planets) do
-                if self.Active_Planets[planet] then
-                    local planet_object = self:get_planet(planet)
-                    if self.condition(planet_object) then
-                        ChangePlanetOwnerAndRetreat(planet_object, self.new_owner)
-                    end
+                local planet_object = self:get_planet(planet)
+                if self.condition(planet_object) then
+                    self.change_owner_strategy(planet_object, self.new_owner)
                 end
             end
         end,

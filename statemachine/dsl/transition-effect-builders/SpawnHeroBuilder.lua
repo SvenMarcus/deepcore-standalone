@@ -1,15 +1,13 @@
 require("deepcore/std/class")
 require("deepcore/std/callable")
-StoryUtil = require("eawx-util/StoryUtil")
 
 ---@class SpawnHeroBuilder
 SpawnHeroBuilder = class()
 
----@param hero string
-function SpawnHeroBuilder:new(hero)
-    self.hero = {hero}
+---@param hero_name string
+function SpawnHeroBuilder:new(hero_name)
+    self.hero_name = hero_name
 
-    self.Active_Planets = {}
     ---@type PlayerObject
     self.faction = nil
 
@@ -17,7 +15,7 @@ function SpawnHeroBuilder:new(hero)
     self.planet = nil
 end
 
----@param factions string
+---@param faction string
 function SpawnHeroBuilder:for_faction(faction)
     self.faction = faction
     return self
@@ -32,13 +30,13 @@ end
 function SpawnHeroBuilder:build()
     return callable {
         faction = self.faction,
-        hero = self.hero,
+        hero = self.hero_name,
         planet = self.planet,
-        Active_Planets = self.Active_Planets,
         call = function(self)
-            self.Active_Planets = StoryUtil.GetSafePlanetTable()
+            local object_type = Find_Object_Type(self.hero)
+            local planet_object = FindPlanet(self.planet)
             local player_object = Find_Player(self.faction)
-            StoryUtil.SpawnAtSafePlanet(self.planet, player_object, self.Active_Planets, self.hero)
+            Spawn_Unit(object_type, planet_object, player_object)
         end
     }
 end
