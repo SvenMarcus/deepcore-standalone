@@ -52,3 +52,5 @@ function deepcore:gamescoring(config)
         end
     }
 end
+
+return deepcore
