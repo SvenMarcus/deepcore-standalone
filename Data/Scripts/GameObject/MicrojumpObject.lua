@@ -34,6 +34,7 @@ function State_Init(message)
 
         DeepCoreRunner = deepcore:game_object {
             context = {},
+            plugin_folder = "eawx-plugins/gameobject/space",
             plugins = { "microjump" }
         }
     elseif message == OnUpdate then

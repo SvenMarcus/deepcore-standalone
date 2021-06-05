@@ -23,7 +23,6 @@ require("deepcore/std/plugintargets")
 require("eawx-plugins/galactic/weekly-game-message-service/GameMessageService")
 
 return {
-    -- weekly-update gets updated every week. This also means we have to implement an "update()" function!
     target = PluginTargets.interval(45),
     -- We can specify plugin dependencies in this table
     dependencies = {"production-listener"},

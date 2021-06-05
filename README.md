@@ -1,4 +1,6 @@
-- [The EawX Galactic Framework](#the-eawx-galactic-framework)
+![](DeepCore.png)
+
+- [The Deep Core Modding Framework](#the-deep-core-modding-framework)
   - [Introduction](#introduction)
   - [License](#license)
   - [Installation](#installation)
@@ -25,9 +27,9 @@
     - [Defining a plugin with dependencies](#defining-a-plugin-with-dependencies)
   - [Using eawx-crossplot for communication between story plots](#using-eawx-crossplot-for-communication-between-story-plots)
 
-# The EawX Galactic Framework
+# The Deep Core Modding Framework
 
-This repository contains the source files of the Empire at War Expanded Galactic Framework. It can be launched as a mod to demonstrate basic functionality.
+This repository contains the source files for a standalone mod version of the Deep Core Framework. The framework was developed for Empire at War Expanded and powers most of its core features.
 
 ## Introduction
 
@@ -42,14 +44,16 @@ This project uses the [MIT License](LICENSE)
 
 ## Installation
 
-Drop the `eawx-` directories into your mod's `Data/Scripts/Library` folder. Override the default `GameScoring.lua` in `Data/Scripts/Miscellaneous` and `PGBase.lua` in `Data/Scripts/Library` with the ones provided in this repository.
+This mod can be used as a base mod for other projects. To make the setup easier it is also released at the Steam Workshop.
+
+If you want to install from this repostitory directly, drop the `Data/Scripts/Library/deepcore` directory into your mod's `Data/Scripts/Library` folder. Override the default `GameScoring.lua` in `Data/Scripts/Miscellaneous` and `PGBase.lua` in `Data/Scripts/Library` with the ones provided in this repository.
 
 ## Quick Reference
 
 ### Plugin folders
 
-All plugins must either be located in the `eawx-plugins` directory (for galactic conquest) or the `eawx-plugins-gameobject-space` or `eawx-plugins-gameobject-land` directories (for game objects). 
-They also need to contain a file called `init.lua` that returns a plugin definition as specified in the following section.
+The parent plugin folder is specified in a configuration table that gets passed to DeepCore initializer functions (e.g. `deepcore:galactic { plugin_folder = "my_plugin_folder"}`). 
+Plugins are folders inside the parent folder that contain at least a file called `init.lua` that returns a plugin definition as specified in the following section.
 
 ### Skeleton of a plugin definition
 
@@ -154,7 +158,7 @@ EawX wraps EaW's planet objects in a custom `Planet` class. `ctx.galactic_conque
 ## Basic set up
 ### Using the framework in Galactic Conquest
 
-A single story plot in a GC should be set as the container for the EawX Framework. A high `ServiceRate` must be set (we use 0.1) in order to guarantee that all plugins will receive updates at the correct time. The `EawXMod` object that loads and updates your plugins can be instantiated without any arguments or with a `context` table that can include variables you want to pass to every plugin `init()` function and a plugin folder list. If no plugin folder list is specified the plugin system will load the file `eawx-plugins/InstalledPlugins.lua`.
+A single story plot in a GC should be set as the container for the EawX Framework. A high `ServiceRate` must be set (we use 0.1) in order to ensure that all plugins will receive updates at the correct time. Calling `deepcore:galactic` will load plugins from the folder specified in the configuration table and return a plugin runner that is responsible for continuously updating your plugins. Additionally a `context` table that can include variables you want to pass to every plugin `init()` function and a list of plugin folders may be provided inside the configuration table. If no plugin folder list is given the plugin system will load the file `InstalledPlugins.lua` from the specified plugin folder.
 
 <details>
   <summary>Click to see the main GC Lua file</summary>
@@ -164,7 +168,7 @@ require("PGDebug")
 require("PGStateMachine")
 require("PGStoryMode")
 
-require("deepcore/std/EawXMod")
+require("deepcore/std/deepcore")
 
 function Definitions()
     DebugMessage("%s -- In Definitions", tostring(Script))
@@ -180,17 +184,21 @@ function Begin_GC(message)
         -- the init() function of your plugins
         local context = {}
 
-        ActiveMod = EawXMod(context)
+        DeepCoreRunner = deepcore:galactic {
+            context = context,
+            plugin_folder = "eawx-plugins/galactic"
+        }
     elseif message == OnUpdate then
-        ActiveMod:update()
+        DeepCoreRunner:update()
     end
 end
+
 ```
 </details>
 
 ### Using the framework with a game object script
 
-The framework isn't limited to Galactic Conquest. You can also use it from a game object script. Instead of using `EawXMod` the game object script requires an instance of `EawXGameObject`. Just like with `EawXMod` the `EawXGameObject` class can be instantiated with optional `context` and `installed_plugins` tables. It is intended to be used during tactical mode only.
+The framework isn't limited to Galactic Conquest. You can also use it from a game object script. Similar to galactic mode you can call `deepcore:game_object()` with a configuration table to load plugins and create a plugin runner. Just like `deepcore:galactic()` you can provide optional `context` and `plugins` tables. It is intended to be used during tactical mode only.
 
 <details>
   <summary>Click to see the game object Lua file</summary>
@@ -198,6 +206,7 @@ The framework isn't limited to Galactic Conquest. You can also use it from a gam
 ```lua
 require("PGCommands")
 require("PGStateMachine")
+require("deepcore/std/deepcore")
 
 function Definitions()
     DebugMessage("%s -- In Definitions", tostring(Script))
@@ -211,13 +220,13 @@ function State_Init(message)
             ScriptExit()
         end
 
-        local context = {}
-        local plugins = { "microjump" }
-
-        EawXGameObject = require("deepcore/std/EawXGameObject")
-        EawXObj = EawXGameObject(context, plugins)
+        DeepCoreRunner = deepcore:game_object {
+            context = {},
+            plugin_folder = "eawx-plugins/gameobject/space",
+            plugins = { "microjump" }
+        }
     elseif message == OnUpdate then
-        EawXObj:update()
+        DeepCoreRunner:update()
     end
 end
 ```
@@ -225,8 +234,6 @@ end
 
 
 ### Creating a plugin definition
-
-Plugins for galactic conquest must be placed inside the `eawx-plugins` directory. Plugins for game objects are placed in the `eawx-plugins-gameobject-space` and `eawx-plugins-gameobject-land` directories. The `PluginLoader` will automatically determine the required directory based on the current game mode. 
 
 A plugin consists of a folder containing at least a file called `init.lua`. It is used to configure and create the plugin object. The `init.lua` must return a table with both `target` and `init` keys. The `target` specifies *when* or *how often* a plugin gets updated. The targets are defined in `plugintargets.lua` and can be extended with new targets if needed. `init` refers to a function that must at least be able to receive the `self` argument. Its second argument is the plugin `context` (`ctx`) table that was defined in the main GC or game object Lua function (see [Using the framework in Galactic Conquest](#using-the-framework-in-galactic-conquest) and [Using the framework with a game object script](#using-the-framework-with-a-game-object-script)). If you're defining a galactic conquest plugin the `ctx` table contains the `GalacticConquest` object in `ctx.galactic_conquest`. See [The GalacticConquest class](#the-galacticconquest-class) for more information on what functions it provides. The `init` function must return a plugin object with an `update` function (unless the target is `never()`).
 Galactic conquest plugins can set the `requires_planets` to `true`. In that case the plugin's update function will be called with one planet at a time.
@@ -238,7 +245,7 @@ The code snippet below demonstrates the structure of the `init.lua` file.
 
 ```lua
 require("deepcore/std/plugintargets")
-require("eawx-plugins/production-listener/ProductionFinishedListener")
+require("eawx-plugins/galactic/production-listener/ProductionFinishedListener")
 
 return {
     target = PluginTargets.never(),
@@ -286,12 +293,12 @@ return {
 ```
 </details>
 
-They can also be objects located in another file like the `ProductionFinishedListener` from the previous section. The next section about events will show its code in more detail. To enhance readability and code structure I recommend placing plugin objects in separate files.
+They can also be objects located in another file like the `ProductionFinishedListener` from the previous section. The next section about events will show its code in more detail. To enhance readability and code structure it is recommended to place plugin objects in separate files.
 
 
 ### Using the events from the GalacticConquest object
 
-The following example demonstrates how to listen to the events defined in the `GalacticConquest` object. As explained in the first plugin definition, the `GalacticConquest` object gets passed to a plugin's `init()` function via the `context` table. From there it can be accessed with `ctx.galactic_conquest`. The events are defined inside a sub-table of the object and can be accessed with `ctx.galactic_conquest.Events`. The `production-listener` plugin uses the `GalacticProductionFinished` to count the total amount of objects produced by the player and return the build cost of the produced object. To do that it attaches its own function `on_production_finished` with the additional argument `self` to the event via `AttachListener()`.
+The following example demonstrates how to listen to the events defined in the `GalacticConquest` object. As explained in the first plugin definition, the `GalacticConquest` object gets passed to a plugin's `init()` function via the `context` table. From there it can be accessed with `ctx.galactic_conquest`. The events are defined inside a sub-table of the object and can be accessed with `ctx.galactic_conquest.Events`. The `production-listener` plugin uses the `GalacticProductionFinished` event to count the total amount of objects produced by the player and return the build cost of the produced object. To do that it attaches its own function `on_production_finished` with the additional argument `self` to the event via `attach_listener()`.
 
 <details>
   <summary>Click to see the ProductionFinishedListener plugin</summary>
@@ -306,7 +313,7 @@ ProductionFinishedListener = class()
 function ProductionFinishedListener:new(galactic_conquest)
     self.human_player = galactic_conquest.HumanPlayer
     self.total_amount_of_objects = 0
-    galactic_conquest.Events.GalacticProductionFinished:AttachListener(self.on_production_finished, self)
+    galactic_conquest.Events.GalacticProductionFinished:attach_listener(self.on_production_finished, self)
 end
 
 ---We don't like to lose money, so we return it to the player on build completion
@@ -342,11 +349,11 @@ Another difference to the `production-listener` plugin is that in this case we u
   <summary>Click to see init.lua of weekly-game-message-service</summary>
 
 ```lua
-require("eawx-plugins/weekly-game-message-service/GameMessageService")
+require("deepcore/std/plugintargets")
+require("eawx-plugins/galactic/weekly-game-message-service/GameMessageService")
 
 return {
-    -- weekly-update gets updated every week. This also means we have to implement an "update()" function!
-    target = "weekly-update",
+    target = PluginTargets.interval(45),
     -- We can specify plugin dependencies in this table
     dependencies = {"production-listener"},
     -- The plugins we specified in the dependencies table will be passed to the init function in order
