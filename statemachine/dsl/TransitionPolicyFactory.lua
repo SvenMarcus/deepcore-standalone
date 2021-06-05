@@ -35,10 +35,10 @@ function TransitionPolicyFactory:hero_dies(hero_type_name)
 end
 
 ---@param planet_name string
-function TransitionPolicyFactory:planet_lost(planet_name)
+function TransitionPolicyFactory:planet_lost(planet_name, new_owner_name, original_owner_name)
     ---@type GalacticConquest
     local gc = self.ctx.galactic_conquest
-    return DeepCorePlanetLostTransitionPolicy(gc.Events.PlanetOwnerChanged, planet_name)
+    return DeepCorePlanetLostTransitionPolicy(gc.Events.PlanetOwnerChanged, planet_name, new_owner_name, original_owner_name)
 end
 
 
