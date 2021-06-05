@@ -11,7 +11,12 @@ return function(dsl)
 
     dsl.transition(initialize)
     :to(setup)
-    :when(policy:planet_lost("Anaxes", "Empire", "Rebel"))
+    :when(policy:planet_owner_changes("Anaxes", "Empire", "Rebel"))
+    :with_effects(
+        effect:transfer_planets("Coruscant")
+            :to_owner("Rebel")
+            :if_(owned_by("Empire"))
+    )
     :end_()
     return initialize
 end
