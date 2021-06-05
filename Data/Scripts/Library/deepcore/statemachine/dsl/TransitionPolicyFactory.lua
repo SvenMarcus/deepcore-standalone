@@ -2,7 +2,7 @@ require("deepcore/std/class")
 require("deepcore/statemachine/transition-policies/DeepCoreTimedTransitionPolicy")
 require("deepcore/statemachine/transition-policies/DeepCoreTechLevelTransitionPolicy")
 require("deepcore/statemachine/transition-policies/DeepCoreHeroDeathTransitionPolicy")
-require("deepcore/statemachine/transition-policies/DeepCorePlanetLostTransitionPolicy")
+require("deepcore/statemachine/transition-policies/DeepCorePlanetOwnerChangedTransitionPolicy")
 require("deepcore/statemachine/transition-policies/DeepCoreObjectConstructionTransitionPolicy")
 
 ---@class TransitionPolicyFactory

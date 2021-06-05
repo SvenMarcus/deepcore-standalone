@@ -1,5 +1,6 @@
 require("deepcore/std/callable")
 
+---@class conditions
 local conditions = {}
 
 function conditions.owned_by(faction_name)
