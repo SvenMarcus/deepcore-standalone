@@ -21,5 +21,6 @@ return {
     "production-listener",
     "weekly-game-message-service",
     "weekly-kuat-flip",
-    "ui-listener"
+    "ui-listener",
+    "statemachine-main"
 }
