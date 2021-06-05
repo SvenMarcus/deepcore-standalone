@@ -1,0 +1,26 @@
+[h1]Empire at War Expanded: Deep Core[/h1]
+[h2]This is a modding resource and not intended to be played by itself![/h2]
+
+[h2]About this mod[/h2]
+
+This is a standalone version of DeepCore, the Lua framework that powers most of the mechanics found in Empire at War Expanded.
+It is not intended to played by itself, but rather to allow other projects to use the DeepCore framework in sub mods without having to install it into their mods directly.
+[b]This mod does not include the mechanics from Empire at War Expanded. It only provides the framework these mechanics are based upon.[/b]
+
+[h2]Capabilities of DeepCore[/h2]
+
+DeepCore is primarily designed as a framework that allows the definition of plugins that get loaded and updated at specified times automatically.
+This allows for fast implementation of new mechanics without having to modify existing code.
+DeepCore also includes an alternative implementation to PGStateMachine with a focus on transitions between states. 
+States can be setup using a specifically implemented internal domain specific language.
+Last but not least, DeepCore also provides the crossplot library which allows for communication between isolated Lua scripts via means of GlobalValues using a publish-subscribe pattern.
+
+[h2]Documentation[/h2]
+
+For a detailed documentation please visit:
+https://github.com/SvenMarcus/eawx-galactic-framework
+
+[h2]Sub mod launching[/h2]
+
+To launch your sub mod with DeepCore as a base use the following launch arguments:
+STEAMMOD=YOURSUBMODID STEAMMOD=DEEPCOREID

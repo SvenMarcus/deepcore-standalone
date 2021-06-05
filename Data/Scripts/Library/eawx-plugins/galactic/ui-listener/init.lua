@@ -10,34 +10,26 @@
 --*                                   |_____|
 --*
 --*   @Author:              [EaWX]Pox
---*   @Date:                2020-12-30
+--*   @Date:                2020-12-29
 --*   @Project:             Empire at War Expanded
---*   @Filename:            MicrojumpObject.lua
+--*   @Filename:            init.lua
 --*   @License:             MIT
 --*****************************************************************************
 
-require("PGCommands")
-require("PGStateMachine")
+require("deepcore/std/plugintargets")
 
-function Definitions()
-    DebugMessage("%s -- In Definitions", tostring(Script))
-    
-    Define_State("State_Init", State_Init)
-end
+return {
+    target = PluginTargets.story_flag("SELECT_CREDIT_FILTER"),
 
-function State_Init(message)
-    if message == OnEnter then
-        if Get_Game_Mode() ~= "Space" then
-            ScriptExit()
-        end
+    init = function(self, ctx)
+        local plot = Get_Story_Plot("STORY_SANDBOX_27_UNDERWORLD.XML")
+        local event = plot.Get_Event("Click_Filter")
+        event.Set_Reward_Parameter(1, Find_Player("local").Get_Faction_Name())
 
-        require("deepcore/std/deepcore")
-        DeepCoreRunner = deepcore:game_object {
-            context = {},
-            plugin_folder = "eawx-plugins/gameobject/space",
-            plugins = { "microjump" }
+        return {
+            update = function(self)
+                Game_Message("TEXT_TOOLTIP_CREDIT_FILTER")
+            end
         }
-    elseif message == OnUpdate then
-        DeepCoreRunner:update()
     end
-end
+}

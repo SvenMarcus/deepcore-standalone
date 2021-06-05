@@ -12,35 +12,20 @@
 --*   @Author:              [EaWX]Pox
 --*   @Date:                2020-12-23
 --*   @Project:             Empire at War Expanded
---*   @Filename:            GCMain.lua
+--*   @Filename:            init.lua
 --*   @License:             MIT
 --*****************************************************************************
 
-require("PGDebug")
-require("PGStateMachine")
-require("PGStoryMode")
+require("deepcore/std/plugintargets")
+require("eawx-plugins/galactic/production-listener/ProductionFinishedListener")
 
-require("deepcore/std/deepcore")
+return {
+    -- The "passive" target means we don't expect to be updated
+    target = PluginTargets.never(),
+    init = function(self, ctx)
+        ---@type GalacticConquest
+        local galactic_conquest = ctx.galactic_conquest
 
-function Definitions()
-    DebugMessage("%s -- In Definitions", tostring(Script))
-
-    ServiceRate = 0.1
-
-    StoryModeEvents = {Universal_Story_Start = Begin_GC}
-end
-
-function Begin_GC(message)
-    if message == OnEnter then
-        -- The context table allows you to pass variables to
-        -- the init() function of your plugins
-        local context = {}
-
-        DeepCoreRunner = deepcore:galactic {
-            context = context,
-            plugin_folder = "eawx-plugins/galactic"
-        }
-    elseif message == OnUpdate then
-        DeepCoreRunner:update()
+        return ProductionFinishedListener(galactic_conquest)
     end
-end
+}

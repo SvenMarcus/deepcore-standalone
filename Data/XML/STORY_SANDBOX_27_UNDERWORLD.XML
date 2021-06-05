@@ -31,4 +31,13 @@
 		<Perpetual>true</Perpetual>
 	</Event>
 
+	<Event Name="Generic_Screen_Text">
+		<Event_Type>STORY_AI_NOTIFICATION</Event_Type>
+		<Event_Param2>GENERIC_SCREEN_TEXT</Event_Param2>
+		<Reward_Type>SCREEN_TEXT</Reward_Type>
+		<Reward_Param1></Reward_Param1>
+		<Reward_Param2>5</Reward_Param2>
+		<Perpetual>true</Perpetual>
+	</Event>
+
 </Story>

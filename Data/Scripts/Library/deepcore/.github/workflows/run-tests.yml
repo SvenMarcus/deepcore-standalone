@@ -1,0 +1,31 @@
+name: Test EaWX Framework
+on: [push, pull_request]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install lua5.1
+        run: sudo apt-get install build-essential lua5.1 luarocks
+
+      - name: Install busted
+        run: |
+          sudo luarocks install busted
+          sudo luarocks install busted-htest
+          sudo luarocks install luacov
+          sudo luarocks install luacov-multiple
+
+      - name: Run busted tests
+        run: busted --defer-print -c -o htest .
+        
+      - name: Report coverage
+        uses: 5monkeys/cobertura-action@v8
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_coverage: 75
