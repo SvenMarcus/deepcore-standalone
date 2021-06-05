@@ -18,11 +18,10 @@
 
 require("PGCommands")
 require("PGStateMachine")
-require("deepcore/std/deepcore")
 
 function Definitions()
     DebugMessage("%s -- In Definitions", tostring(Script))
-
+    
     Define_State("State_Init", State_Init)
 end
 
@@ -32,6 +31,7 @@ function State_Init(message)
             ScriptExit()
         end
 
+        require("deepcore/std/deepcore")
         DeepCoreRunner = deepcore:game_object {
             context = {},
             plugin_folder = "eawx-plugins/gameobject/space",
