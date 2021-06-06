@@ -18,9 +18,9 @@ Last but not least, DeepCore also provides the crossplot library which allows fo
 [h2]Documentation[/h2]
 
 For a detailed documentation please visit:
-https://github.com/SvenMarcus/eawx-galactic-framework
+https://github.com/SvenMarcus/deepcore-standalone/wiki
 
 [h2]Sub mod launching[/h2]
 
 To launch your sub mod with DeepCore as a base use the following launch arguments:
-STEAMMOD=YOURSUBMODID STEAMMOD=DEEPCOREID
+STEAMMOD=YOURSUBMODID STEAMMOD=2508288191
