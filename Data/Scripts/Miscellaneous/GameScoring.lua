@@ -410,9 +410,8 @@ function Game_Mode_Starting_Event(mode_name, map_name)
     if StringCompare(mode_name, "Galactic") then
         -- Galactic Campaign
         if not GameScoringPluginRunner then
-            GameScoringPluginRunner = deepcore:gamescoring {
-                plugin_folder = "eawx-plugins/gamescoring"
-            }
+            local config = require("DeepCoreGameScoringConfig")
+            GameScoringPluginRunner = deepcore:gamescoring(config)
         end
 
         CampaignGame = true
