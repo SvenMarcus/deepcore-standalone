@@ -6,13 +6,18 @@ require("deepcore/galaxy/GalacticConquest")
 deepcore = {}
 
 function deepcore:galactic(config)
-    local plugin_loader = PluginLoader(config.context, config.plugin_folder)
+    if not config.plugin_folder then
+        error("Missing mandatory setting plugin_folder")
+    end
+
+    local context = config.context or {}
+    local plugin_loader = PluginLoader(context, config.plugin_folder)
     crossplot:galactic()
-    config.context.galactic_conquest = GalacticConquest(config.planet_factory)
+    context.galactic_conquest = GalacticConquest(config.planet_factory)
     plugin_loader:load(config.plugins)
 
     return {
-        planets = config.context.galactic_conquest.Planets,
+        planets = context.galactic_conquest.Planets,
         plugin_containers = plugin_loader:get_plugin_containers(),
         planet_dependent_plugin_containers = plugin_loader:get_planet_dependent_plugin_containers(),
         plugin_updatecycle = require("deepcore/std/plugin_updatecycle").galactic_plugin_update_cycle,
@@ -24,6 +29,10 @@ function deepcore:galactic(config)
 end
 
 function deepcore:game_object(config)
+    if not config.plugin_folder then
+        error("Missing mandatory setting plugin_folder")
+    end
+
     local plugin_loader = PluginLoader(config.context, config.plugin_folder)
     crossplot:game_object()
     plugin_loader:load(config.plugins)
@@ -39,6 +48,10 @@ function deepcore:game_object(config)
 end
 
 function deepcore:gamescoring(config)
+    if not config.plugin_folder then
+        error("Missing mandatory setting plugin_folder")
+    end
+
     local plugin_loader = PluginLoader(config.context, config.plugin_folder)
     crossplot:main()
     plugin_loader:load(config.plugins)

@@ -1,4 +1,15 @@
 describe("DeepCore", function()
+
+    local function capture_plugin_stub_context()
+        local context_capture = {}
+        local preloaded_plugin = require("spec/test-plugins/plugin-stub/init")
+        preloaded_plugin.init = function(self, ctx)
+            context_capture.context = ctx
+        end
+
+        return context_capture
+    end
+
     local require_utilities = require("spec.require_utilities")
     local eaw_env = require("spec.eaw_env")
 
@@ -15,11 +26,13 @@ describe("DeepCore", function()
     after_each(function()
         require_utilities.reset_require()
         eaw_env.teardown_environment()
-        
+
         _G.deepcore = nil
         _G.crossplot = nil
         package.loaded["std/deepcore"] = nil
         package.loaded["crossplot/crossplot"] = nil
+        package.loaded["spec/test-plugins/plugin-stub/init"] = nil
+
         collectgarbage("collect")
     end)
 
@@ -78,6 +91,24 @@ describe("DeepCore", function()
             local meta_index = getmetatable(context.galactic_conquest).__index
             assert.are.equal(meta_index, _G.GalacticConquest)
         end)
+
+        describe("without context table", function()
+            it("should add galactic conquest instance to context", function()
+                _G.GalacticConquest = require("galaxy.GalacticConquest")
+
+                local context_capture = capture_plugin_stub_context()
+
+                deepcore:galactic {
+                    plugins = {"plugin-stub"},
+                    plugin_folder = "spec/test-plugins",
+                    context = nil
+                }
+
+                local context = context_capture.context
+                local meta_index = getmetatable(context.galactic_conquest).__index
+                assert.are.equal(meta_index, _G.GalacticConquest)
+            end)
+        end)
     end)
 
     describe("Given deepcore:galactic initialized", function()
@@ -110,9 +141,9 @@ describe("DeepCore", function()
 
             it("should update crossplot", function()
                 require("crossplot/crossplot")
-                
+
                 spy.on(crossplot, "update")
-                
+
                 local deepcore_runner = deepcore:galactic {
                     context = {},
                     plugins = {},
@@ -156,9 +187,9 @@ describe("DeepCore", function()
 
         it("should update crossplot", function()
             require("crossplot/crossplot")
-            
+
             spy.on(crossplot, "update")
-            
+
             local deepcore_runner = deepcore:game_object {
                 context = {},
                 plugins = {},
@@ -169,9 +200,24 @@ describe("DeepCore", function()
 
             assert.spy(crossplot.update).was.called()
         end)
+
+        describe("without context table", function()
+            it("should provide empty context table", function()
+                local context_capture = capture_plugin_stub_context()
+
+                deepcore:game_object {
+                    plugins = {"plugin-stub"},
+                    plugin_folder = "spec/test-plugins",
+                    context = nil
+                }
+
+                local context = context_capture.context
+                assert.are.same({}, context)
+            end)
+        end)
     end)
 
-    describe("Given deepcore:generic initialized", function()
+    describe("Given deepcore:game_object initialized", function()
         describe("When updating", function()
             it("should update all plugins", function()
                 local context = { updated_plugins = {} }
@@ -215,6 +261,21 @@ describe("DeepCore", function()
 
             assert.spy(_G.crossplot.main).was.called()
         end)
+
+        describe("without context table", function()
+            it("should provide empty context table", function()
+                local context_capture = capture_plugin_stub_context()
+
+                deepcore:gamescoring {
+                    plugins = {"plugin-stub"},
+                    plugin_folder = "spec/test-plugins",
+                    context = nil
+                }
+
+                local context = context_capture.context
+                assert.are.same({}, context)
+            end)
+        end)
     end)
 
     describe("Given deepcore:gamescoring initialized", function()
@@ -230,6 +291,42 @@ describe("DeepCore", function()
                 deepcore_runner:update()
 
                 assert.are.same({"plugin-stub"}, context.updated_plugins)
+            end)
+
+            it("should update crossplot", function()
+                require("crossplot/crossplot")
+
+                spy.on(crossplot, "update")
+
+                local deepcore_runner = deepcore:gamescoring {
+                    context = {},
+                    plugins = {},
+                    plugin_folder = "spec/test-plugins"
+                }
+
+                deepcore_runner:update()
+
+                assert.spy(crossplot.update).was.called()
+            end)
+        end)
+    end)
+
+    describe("When initializing any deepcore module without plugin folder", function()
+        local function assert_raises_missing_plugin_folder_error(func)
+            assert.has_error(func, "Missing mandatory setting plugin_folder")
+        end
+
+        it("should raise an error", function()
+            assert_raises_missing_plugin_folder_error(function()
+                deepcore:galactic {}
+            end)
+
+            assert_raises_missing_plugin_folder_error(function()
+                deepcore:game_object {}
+            end)
+
+            assert_raises_missing_plugin_folder_error(function()
+                deepcore:gamescoring {}
             end)
         end)
     end)
