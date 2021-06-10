@@ -72,6 +72,11 @@ end
 ---@param listener_function function
 ---@param optional_self table
 function crossplot:subscribe(event_name, listener_function, optional_self)
+    if self.__instance then
+        DebugMessage("crossplot has not initialized in this plot")
+        return
+    end
+
     self.__instance:subscribe(event_name, listener_function, optional_self)
 end
 
@@ -80,13 +85,30 @@ end
 ---@param listener_function function
 ---@param optional_self table
 function crossplot:unsubscribe(event_name, listener_function, optional_self)
+    if self.__instance then
+        DebugMessage("crossplot has not initialized in this plot")
+        return
+    end
+
     self.__instance:unsubscribe(event_name, listener_function, optional_self)
 end
 
 function crossplot:publish(event_name, ...)
+    if self.__instance then
+        DebugMessage("crossplot has not initialized in this plot")
+        return
+    end
+
     self.__instance:publish(event_name, unpack(arg))
 end
 
-function crossplot:update() self.__instance:update() end
+function crossplot:update()
+    if self.__instance then
+        DebugMessage("crossplot has not initialized in this plot")
+        return
+    end
+
+    self.__instance:update()
+end
 
 return crossplot
