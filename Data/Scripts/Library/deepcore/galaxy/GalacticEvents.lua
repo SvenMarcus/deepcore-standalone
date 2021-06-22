@@ -87,8 +87,8 @@ function GalacticHeroKilledEvent:new()
     crossplot:subscribe("GALACTIC_HERO_KILLED", self.galactic_hero_killed, self)
 end
 
-function GalacticHeroKilledEvent:galactic_hero_killed(hero_name)
-    self:notify(hero_name)
+function GalacticHeroKilledEvent:galactic_hero_killed(hero_name, owner_name, killer_name)
+    self:notify(hero_name, owner_name, killer_name)
 end
 
 ---@class TacticalBattleEndedEvent : Observable
