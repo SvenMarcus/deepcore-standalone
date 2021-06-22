@@ -484,8 +484,19 @@ end
 function Galactic_Unit_Destroyed_Event(object, killer)
     local object_type = object.Get_Type()
 
+    local killer_name = ""
+    if TestValid(killer) and killer.Get_Faction_Name then
+        killer_name = killer.Get_Faction_Name()
+    end
+
+    local owner = object.Get_Owner()
+    local owner_name = ""
+    if TestValid(owner) and owner.Get_Faction_Name then
+        owner_name = owner.Get_Faction_Name()
+    end
+
     if object_type.Is_Hero() and not object.Is_Category("Structure") then
-        crossplot:publish("GALACTIC_HERO_KILLED", object_type.Get_Name())
+        crossplot:publish("GALACTIC_HERO_KILLED", object_type.Get_Name(), owner_name, killer_name)
     end
 
     Update_Kill_Stats_Table(GalacticKillStatsTable, object, killer)
