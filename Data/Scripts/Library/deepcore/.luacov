@@ -1,0 +1,26 @@
+local configuration = {
+	-- standard luacov configuration keys and values here
+    runreport = true,
+    reportfile = 'luacov.report.out',
+
+    include = {
+        "crossplot/*",
+        "galaxy/*",
+        "std/*",
+    },
+
+    -- multiple settings
+    reporter = "multiple",
+
+    multiple = {
+        reporters = {"multiple.cobertura"},
+        cobertura = {
+            reportfile = 'coverage.xml'
+        },
+        html = {
+            reportfile = 'output/coverage/report/index.html'
+        }
+    }
+}
+
+return configuration
