@@ -1,7 +1,0 @@
-.vscode/
-.devcontainer/
-
-# LuaCov output
-*.out
-*.html
-coverage.xml
