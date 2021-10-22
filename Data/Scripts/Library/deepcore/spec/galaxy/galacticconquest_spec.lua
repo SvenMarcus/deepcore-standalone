@@ -24,7 +24,7 @@ describe("GalacticConquest", function()
             PlanetC = make_fake_planet("PlanetC", "Owner")
         }
 
-        _G.Find_Player = function() end
+        _G.Find_Player = function(_) end
         findplanet.setup_findplanet(planet_map)
 
         local owner = make_fake_player("Owner")
