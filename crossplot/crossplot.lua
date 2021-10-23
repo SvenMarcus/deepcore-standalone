@@ -146,7 +146,10 @@ end
 ---@private
 function crossplot:publish_stored_batch_events()
     for event_name, batch_processor in pairs(self.__batch_processors) do
-        self.__instance:publish(event_name, batch_processor.arg_store)
+        if table.getn(batch_processor.arg_store) > 0 then
+            self.__instance:publish(event_name, batch_processor.arg_store)
+            batch_processor.arg_store = {}
+        end
     end
 end
 

@@ -1,12 +1,12 @@
 describe("crossplot MainKeyValueStoreBasedEventBus", function()
-    local eaw_env = require("spec/eaw_env")
-    local require_utilities = require("spec/require_utilities")
+    local eaw_env = require("spec.eaw_env")
+    local require_utilities = require("spec.require_utilities")
 
     before_each(function()
         eaw_env.setup_environment()
         require_utilities.replace_require()
-        require("crossplot/KeyValueStoreBasedEventBus")
-        require("crossplot/GlobalValueKeyValueStore")
+        require("crossplot.KeyValueStoreBasedEventBus")
+        require("crossplot.GlobalValueKeyValueStore")
     end)
 
     after_each(function()

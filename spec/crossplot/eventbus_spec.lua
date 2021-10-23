@@ -10,15 +10,15 @@ describe("Eventbus", function()
     before_each(function()
         local make_fake_kvstore = require("spec.crossplot.fake_kvstore")
 
-        require_utilities = require("spec/require_utilities")
+        require_utilities = require("spec.require_utilities")
         require_utilities.replace_require()
         
-        eaw_env = require("spec/eaw_env")
+        eaw_env = require("spec.eaw_env")
         eaw_env.setup_environment()
         
         busid = "busid:".._G.Script
         
-        require("crossplot/KeyValueStoreBasedEventBus")
+        require("crossplot.KeyValueStoreBasedEventBus")
         fake_kvstore = make_fake_kvstore()
         eventbus = KeyValueStoreBasedEventBus(_G.Script, fake_kvstore)
     end)
