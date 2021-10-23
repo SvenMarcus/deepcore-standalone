@@ -140,7 +140,7 @@ describe("DeepCore", function()
             end)
 
             it("should update crossplot", function()
-                require("crossplot/crossplot")
+                require("crossplot.crossplot")
 
                 spy.on(crossplot, "update")
 
@@ -186,7 +186,7 @@ describe("DeepCore", function()
         end)
 
         it("should update crossplot", function()
-            require("crossplot/crossplot")
+            require("crossplot.crossplot")
 
             spy.on(crossplot, "update")
 
@@ -294,7 +294,7 @@ describe("DeepCore", function()
             end)
 
             it("should update crossplot", function()
-                require("crossplot/crossplot")
+                require("crossplot.crossplot")
 
                 spy.on(crossplot, "update")
 

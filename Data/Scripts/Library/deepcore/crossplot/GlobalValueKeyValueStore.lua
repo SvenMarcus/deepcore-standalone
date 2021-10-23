@@ -24,3 +24,5 @@ end
 function GlobalValueKeyValueStore:free(key)
     GlobalValue.Set(key, "")
 end
+
+return GlobalValueKeyValueStore
