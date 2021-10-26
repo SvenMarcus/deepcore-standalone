@@ -18,7 +18,7 @@ describe("Eventbus", function()
         
         busid = "busid:".._G.Script
         
-        require("crossplot.KeyValueStoreBasedEventBus")
+        require("deepcore/crossplot/KeyValueStoreBasedEventBus")
         fake_kvstore = make_fake_kvstore()
         eventbus = KeyValueStoreBasedEventBus(_G.Script, fake_kvstore)
     end)

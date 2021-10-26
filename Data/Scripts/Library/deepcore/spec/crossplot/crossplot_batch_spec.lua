@@ -14,7 +14,6 @@ describe("crossplot", function()
     after_each(function()
         eaw_env.teardown_environment()
         require_utilities.reset_require()
-        
     end)
 
     describe("Given event set as batch processing", function()
@@ -33,6 +32,7 @@ describe("crossplot", function()
                 crossplot:galactic()
                 crossplot:set_batch_processing("my-event")
             end)
+
 
             local function run_crossplot_update_cycle()
                 crossplot:update()
