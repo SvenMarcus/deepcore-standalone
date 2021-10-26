@@ -36,7 +36,7 @@ end
 ---Initialize crossplot for the galactic plot
 function crossplot:galactic()
     if self.__instance then
-        DebugMessage("crossplot has already been initialized in this plot")
+        error("crossplot has already been initialized in this plot")
         return
     end
 

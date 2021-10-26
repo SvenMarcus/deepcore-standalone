@@ -14,8 +14,8 @@ describe("GalacticConquest", function()
         require_utilities.replace_require()
         eaw_env.setup_environment()
 
-        require("galaxy.GalacticConquest")
-        require("crossplot.crossplot")
+        require("deepcore/galaxy/GalacticConquest")
+        require("deepcore/crossplot/crossplot")
         crossplot:galactic()
 
         planet_map = {

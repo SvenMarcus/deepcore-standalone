@@ -4,7 +4,7 @@ return {
     __trace = 3,
     __info = 2,
     __warn = 1,
-    __sink = require("eaw-log/sinks/file"),
+    __sink = require("deepcore/log/sinks/file"),
     log_level = function(self) return self.__log_level end,
     with_sink = function(self, sink)
         if type(sink) == "table" then
@@ -13,14 +13,14 @@ return {
         end
         local use_default_sink = false
         if type(sink) ~= "string" then use_default_sink = true end
-        if nil == require("eaw-log/sinks/" .. sink) then
+        if nil == require("deepcore/log/sinks/" .. sink) then
             use_default_sink = true
         end
         if use_default_sink then
-            self.__sink = require("eaw-log/sinks/file")
+            self.__sink = require("deepcore/log/sinks/file")
             return self
         end
-        self.__sink = require("eaw-log/sinks/" .. sink)
+        self.__sink = require("deepcore/log/sinks/" .. sink)
         return self
     end,
     with_log_level = function(self, level)
