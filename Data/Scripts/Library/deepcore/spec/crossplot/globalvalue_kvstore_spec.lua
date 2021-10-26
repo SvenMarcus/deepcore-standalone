@@ -8,7 +8,7 @@ describe("GlobalValueKeyValueStore", function()
 
         require_utilities = require("spec.require_utilities")
         require_utilities.replace_require()
-        require("crossplot.GlobalValueKeyValueStore")
+        require("deepcore/crossplot/GlobalValueKeyValueStore")
     end)
 
     after_each(function()

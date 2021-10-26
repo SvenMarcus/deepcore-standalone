@@ -19,7 +19,7 @@ require("deepcore/crossplot/KeyValueStoreBasedEventBus")
 require("deepcore/crossplot/GlobalValueKeyValueStore")
 
 ---A module that allows publish-subscribe communication between different Lua script environments
-crossplot = {__instance = nil, __important = true}
+crossplot = {__instance = nil, __important = true, __batch_processors = {}}
 
 ---Initialize the main crossplot instance. Use only in GameScoring.
 function crossplot:main()
@@ -36,7 +36,7 @@ end
 ---Initialize crossplot for the galactic plot
 function crossplot:galactic()
     if self.__instance then
-        DebugMessage("crossplot has already been initialized in this plot")
+        error("crossplot has already been initialized in this plot")
         return
     end
 
@@ -99,6 +99,10 @@ function crossplot:publish(event_name, ...)
         return
     end
 
+    if self:try_publish_batch(event_name, arg) then
+        return
+    end
+
     self.__instance:publish(event_name, unpack(arg))
 end
 
@@ -108,7 +112,45 @@ function crossplot:update()
         return
     end
 
+    self:publish_stored_batch_events()
     self.__instance:update()
+end
+
+---@param event_name string
+function crossplot:set_batch_processing(event_name)
+    if self.__batch_processors[event_name] then
+        return
+    end
+
+    self.__batch_processors[event_name] = {
+        arg_store = {}
+    }
+end
+
+---@private
+---@param event_name string
+---@param arg_table table<number, any>
+function crossplot:try_publish_batch(event_name, arg_table)
+    local batch_processor = self.__batch_processors[event_name]
+    if not batch_processor then
+        return false
+    end
+
+    for _, value in ipairs(arg_table) do
+        table.insert(batch_processor.arg_store, value)
+    end
+    
+    return true
+end
+
+---@private
+function crossplot:publish_stored_batch_events()
+    for event_name, batch_processor in pairs(self.__batch_processors) do
+        if table.getn(batch_processor.arg_store) > 0 then
+            self.__instance:publish(event_name, batch_processor.arg_store)
+            batch_processor.arg_store = {}
+        end
+    end
 end
 
 return crossplot

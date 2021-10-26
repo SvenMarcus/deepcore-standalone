@@ -66,7 +66,7 @@ describe("DeepCore", function()
         end)
 
         it("should initialize crossplot:galactic", function()
-            require("crossplot.crossplot")
+            require("deepcore/crossplot/crossplot")
             spy.on(_G.crossplot, "galactic")
 
             deepcore:galactic {
@@ -79,7 +79,7 @@ describe("DeepCore", function()
         end)
 
         it("should add galactic conquest instance to context", function()
-            _G.GalacticConquest = require("galaxy.GalacticConquest")
+            _G.GalacticConquest = require("deepcore/galaxy/GalacticConquest")
 
             local context = {}
             deepcore:galactic {
@@ -94,7 +94,7 @@ describe("DeepCore", function()
 
         describe("without context table", function()
             it("should add galactic conquest instance to context", function()
-                _G.GalacticConquest = require("galaxy.GalacticConquest")
+                _G.GalacticConquest = require("deepcore/galaxy/GalacticConquest")
 
                 local context_capture = capture_plugin_stub_context()
 
@@ -140,7 +140,7 @@ describe("DeepCore", function()
             end)
 
             it("should update crossplot", function()
-                require("crossplot/crossplot")
+                require("deepcore/crossplot/crossplot")
 
                 spy.on(crossplot, "update")
 
@@ -173,7 +173,7 @@ describe("DeepCore", function()
         end)
 
         it("should initialize crossplot:game_object", function()
-            require("crossplot.crossplot")
+            require("deepcore/crossplot/crossplot")
             spy.on(_G.crossplot, "game_object")
 
             deepcore:game_object {
@@ -186,7 +186,7 @@ describe("DeepCore", function()
         end)
 
         it("should update crossplot", function()
-            require("crossplot/crossplot")
+            require("crossplot.crossplot")
 
             spy.on(crossplot, "update")
 
@@ -250,7 +250,7 @@ describe("DeepCore", function()
         end)
 
         it("should initialize crossplot:main", function()
-            require("crossplot.crossplot")
+            require("deepcore/crossplot/crossplot")
             spy.on(_G.crossplot, "main")
 
             deepcore:gamescoring {
@@ -294,7 +294,7 @@ describe("DeepCore", function()
             end)
 
             it("should update crossplot", function()
-                require("crossplot/crossplot")
+                require("crossplot.crossplot")
 
                 spy.on(crossplot, "update")
 

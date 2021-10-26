@@ -12,7 +12,7 @@ describe("MessageQueue", function()
         require_utilities = require("spec.require_utilities")
         require_utilities.replace_require()
 
-        require("crossplot/MessageQueue")
+        require("deepcore/crossplot/MessageQueue")
         local make_fake_kvstore = require("spec.crossplot.fake_kvstore")
         fake_kvstore = make_fake_kvstore()
 

@@ -14,8 +14,8 @@ describe("GalacticConquest", function()
         require_utilities.replace_require()
         eaw_env.setup_environment()
 
-        require("galaxy/GalacticConquest")
-        require("crossplot/crossplot")
+        require("deepcore/galaxy/GalacticConquest")
+        require("deepcore/crossplot/crossplot")
         crossplot:galactic()
 
         planet_map = {
@@ -24,7 +24,7 @@ describe("GalacticConquest", function()
             PlanetC = make_fake_planet("PlanetC", "Owner")
         }
 
-        _G.Find_Player = function() end
+        _G.Find_Player = function(_) end
         findplanet.setup_findplanet(planet_map)
 
         local owner = make_fake_player("Owner")
